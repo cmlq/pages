@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>前端基础技术 - 主题介绍</title>
+  <link rel="stylesheet" href="./courseware-html-visual-spec.css">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    :root {
+      --theme-primary: #007AFF;
+    }
+
+    body {
+      position: relative;
+      background:
+        radial-gradient(circle at 18% 18%, color-mix(in srgb, var(--theme-primary) 18%, var(--bg-primary)), transparent 30%),
+        radial-gradient(circle at 82% 16%, color-mix(in srgb, var(--theme-primary) 10%, var(--surface-primary)), transparent 28%),
+        linear-gradient(180deg, var(--bg-primary), var(--bg-secondary));
+      color: var(--label-primary);
+      overflow: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(135deg, var(--surface-secondary), transparent 32%),
+        radial-gradient(circle at 50% 100%, color-mix(in srgb, var(--theme-primary) 8%, transparent), transparent 28%);
+      opacity: 0.85;
+    }
+
+    .page {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      padding: 24px;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .cover {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 32px;
+      background:
+        linear-gradient(180deg, color-mix(in srgb, var(--surface-primary) 88%, var(--bg-secondary)), var(--surface-primary));
+      border: 1px solid color-mix(in srgb, var(--theme-primary) 24%, var(--separator));
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .cover::before {
+      content: "";
+      position: absolute;
+      inset: 42px;
+      border-radius: 26px;
+      border: 1px solid color-mix(in srgb, var(--theme-primary) 26%, var(--separator));
+      pointer-events: none;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      gap: 36px;
+      align-items: center;
+      padding: 58px 64px;
+      box-sizing: border-box;
+    }
+
+    .left {
+      max-width: 720px;
+      display: grid;
+      gap: 18px;
+      align-content: center;
+    }
+
+    .kicker {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      min-height: 38px;
+      padding: 0 16px;
+      border-radius: 999px;
+      background: var(--surface-secondary);
+      border: 0.5px solid var(--separator);
+      color: var(--theme-primary);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(42px, 5.4vw, 74px);
+      line-height: 1;
+      letter-spacing: -0.06em;
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: clamp(18px, 1.8vw, 24px);
+      line-height: 1.45;
+      color: var(--label-secondary);
+      font-weight: 500;
+    }
+
+    .summary {
+      margin: 0;
+      max-width: 640px;
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--label-secondary);
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 2px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--surface-secondary) 84%, transparent);
+      border: 0.5px solid color-mix(in srgb, var(--separator) 88%, transparent);
+      color: var(--label-secondary);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      width: 100%;
+      max-width: 640px;
+      margin-top: 6px;
+    }
+
+    .meta-card {
+      display: grid;
+      gap: 6px;
+      padding: 13px 14px;
+      border-radius: 18px;
+      background: color-mix(in srgb, var(--surface-secondary) 82%, transparent);
+      border: 0.5px solid var(--separator);
+    }
+
+    .meta-label {
+      color: var(--label-tertiary);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .meta-value {
+      color: var(--label-primary);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .right {
+      align-self: center;
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+      border-radius: 28px;
+      background: color-mix(in srgb, var(--surface-secondary) 72%, transparent);
+      border: 1px solid color-mix(in srgb, var(--theme-primary) 22%, var(--separator));
+      box-shadow: var(--shadow-sm);
+      backdrop-filter: blur(18px);
+    }
+
+    .window-bar {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding: 2px 2px 0;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--theme-primary) 78%, #ffffff 22%);
+    }
+
+    .dot:nth-child(2) {
+      background: color-mix(in srgb, #ffbd44 78%, #ffffff 22%);
+    }
+
+    .dot:nth-child(3) {
+      background: color-mix(in srgb, #30d158 78%, #ffffff 22%);
+    }
+
+    .stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .block {
+      display: grid;
+      gap: 6px;
+      padding: 16px 18px;
+      border-radius: 22px;
+      background: var(--surface-primary);
+      border: 0.5px solid var(--separator);
+    }
+
+    .block.html {
+      border-color: color-mix(in srgb, #ff8a00 38%, var(--separator));
+      background: color-mix(in srgb, #ff8a00 14%, var(--surface-secondary));
+    }
+
+    .block.css {
+      border-color: color-mix(in srgb, #0a84ff 34%, var(--separator));
+      background: color-mix(in srgb, #0a84ff 12%, var(--surface-secondary));
+    }
+
+    .block.js {
+      border-color: color-mix(in srgb, #ffd60a 34%, var(--separator));
+      background: color-mix(in srgb, #ffd60a 10%, var(--surface-secondary));
+    }
+
+    .block-label {
+      color: var(--label-tertiary);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .block-title {
+      color: var(--label-primary);
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .block-desc {
+      color: var(--label-secondary);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      color: var(--label-tertiary);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .flow span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .flow span::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--theme-primary);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--theme-primary) 14%, transparent);
+    }
+
+    .slide {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 32px;
+      background:
+        linear-gradient(180deg, color-mix(in srgb, var(--surface-primary) 90%, var(--bg-secondary)), var(--surface-primary));
+      border: 1px solid color-mix(in srgb, var(--theme-primary) 22%, var(--separator));
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      display: none;
+    }
+
+    .slide.is-active {
+      display: block;
+    }
+
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 40px;
+      border-radius: 26px;
+      border: 1px solid color-mix(in srgb, var(--theme-primary) 18%, var(--separator));
+      pointer-events: none;
+    }
+
+    .slide-content {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      display: grid;
+      gap: 22px;
+      padding: 52px 58px;
+      box-sizing: border-box;
+      align-content: start;
+    }
+
+    .framework-head {
+      display: grid;
+      gap: 12px;
+      max-width: 820px;
+    }
+
+    .framework-title {
+      margin: 0;
+      font-size: clamp(36px, 4.4vw, 62px);
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    .framework-desc {
+      margin: 0;
+      color: var(--label-secondary);
+      font-size: 16px;
+      line-height: 1.7;
+      max-width: 760px;
+    }
+
+    .framework-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      align-items: stretch;
+      margin-top: 4px;
+    }
+
+    .framework-panel {
+      display: grid;
+      gap: 16px;
+      padding: 20px 20px 18px;
+      border-radius: 24px;
+      background: color-mix(in srgb, var(--surface-secondary) 80%, transparent);
+      border: 0.5px solid var(--separator);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .framework-panel.highlight {
+      border-color: color-mix(in srgb, var(--theme-primary) 34%, var(--separator));
+      background: color-mix(in srgb, var(--theme-primary) 10%, var(--surface-secondary));
+    }
+
+    .framework-panel-head {
+      display: grid;
+      gap: 6px;
+    }
+
+    .framework-index {
+      color: var(--theme-primary);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .framework-panel-title {
+      color: var(--label-primary);
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .framework-panel-subtitle {
+      color: var(--label-secondary);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .framework-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .framework-item {
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      color: var(--label-secondary);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .framework-bullet {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: var(--surface-primary);
+      border: 0.5px solid var(--separator);
+      color: var(--theme-primary);
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 1px;
+    }
+
+    .framework-highlight-strip {
+      display: grid;
+      gap: 8px;
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: color-mix(in srgb, var(--surface-primary) 76%, transparent);
+      border: 0.5px solid color-mix(in srgb, var(--theme-primary) 28%, var(--separator));
+    }
+
+    .framework-highlight-label {
+      color: var(--label-tertiary);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .framework-highlight-text {
+      color: var(--label-primary);
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    .section-page {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 32px;
+      background:
+        linear-gradient(180deg, color-mix(in srgb, var(--surface-primary) 90%, var(--bg-secondary)), var(--surface-primary));
+      border: 1px solid color-mix(in srgb, var(--theme-primary) 22%, var(--separator));
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .section-page::before {
+      content: "";
+      position: absolute;
+      inset: 38px;
+      border-radius: 26px;
+      border: 1px solid color-mix(in srgb, var(--theme-primary) 18%, var(--separator));
+      pointer-events: none;
+    }
+
+    .section-content {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+      gap: 22px;
+      padding: 44px 52px;
+      box-sizing: border-box;
+      align-items: center;
+    }
+
+    .section-left {
+      display: grid;
+      gap: 16px;
+      align-content: start;
+      max-width: 520px;
+      align-self: start;
+    }
+
+    .section-index {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      min-height: 38px;
+      padding: 0 16px;
+      border-radius: 999px;
+      background: var(--surface-secondary);
+      border: 0.5px solid var(--separator);
+      color: var(--theme-primary);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: clamp(34px, 4vw, 56px);
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    .section-subtitle {
+      margin: 0;
+      color: var(--label-secondary);
+      font-size: 17px;
+      line-height: 1.55;
+      font-weight: 500;
+    }
+
+    .section-summary {
+      margin: 0;
+      color: var(--label-secondary);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .section-points {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .section-point {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: color-mix(in srgb, var(--surface-secondary) 80%, transparent);
+      border: 0.5px solid var(--separator);
+      color: var(--label-secondary);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .section-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      background: var(--surface-primary);
+      border: 0.5px solid var(--separator);
+      color: var(--theme-primary);
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 1px;
+    }
+
+    .section-right {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+      align-self: start;
+    }
+
+    .section-two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 0.96fr) minmax(0, 1.04fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .section-column {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+      min-width: 0;
+    }
+
+    .section-image-block {
+      display: grid;
+      gap: 10px;
+    }
+
+    .css-right {
+      gap: 10px;
+    }
+
+    .css-media-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      align-items: start;
+    }
+
+    .section-card {
+      display: grid;
+      gap: 8px;
+      padding: 18px 20px;
+      border-radius: 22px;
+      background: color-mix(in srgb, var(--surface-secondary) 82%, transparent);
+      border: 0.5px solid var(--separator);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .section-card.primary {
+      background: color-mix(in srgb, var(--theme-primary) 10%, var(--surface-secondary));
+      border-color: color-mix(in srgb, var(--theme-primary) 28%, var(--separator));
+    }
+
+    .section-card-label {
+      color: var(--label-tertiary);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .section-card-title {
+      color: var(--label-primary);
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .section-card-desc {
+      color: var(--label-secondary);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .section-code {
+      display: grid;
+      gap: 8px;
+      padding: 16px 18px;
+      max-height: 260px;
+      border-radius: 18px;
+      background: var(--surface-primary);
+      border: 0.5px solid var(--separator);
+      color: var(--label-secondary);
+      font-size: 13px;
+      line-height: 1.55;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      overflow: auto;
+    }
+
+    .section-code pre {
+      margin: 0;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .section-media-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .section-media-card {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      border-radius: 22px;
+      background: color-mix(in srgb, var(--surface-secondary) 80%, transparent);
+      border: 0.5px solid var(--separator);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .section-media-title {
+      color: var(--label-tertiary);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .section-media-card img {
+      width: auto;
+      max-width: 100%;
+      max-height: 260px;
+      display: block;
+      object-fit: contain;
+      border-radius: 16px;
+      border: 0.5px solid var(--separator);
+      background: var(--surface-primary);
+      margin: 0 auto;
+    }
+
+    .section-code-title {
+      color: var(--label-tertiary);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    @media (max-width: 768px) {
+      .page {
+        padding: 14px;
+      }
+
+      .content {
+        grid-template-columns: 1fr;
+        gap: 18px;
+        padding: 30px 18px 18px;
+        align-items: start;
+      }
+
+      .cover::before {
+        inset: 18px;
+      }
+
+      h1 {
+        font-size: clamp(34px, 10vw, 52px);
+      }
+
+      .subtitle {
+        font-size: 16px;
+      }
+
+      .summary {
+        font-size: 15px;
+      }
+
+      .meta {
+        grid-template-columns: 1fr;
+      }
+
+      .right {
+        padding: 14px;
+      }
+
+      .slide-content {
+        padding: 28px 18px 18px;
+      }
+
+      .slide::before {
+        inset: 18px;
+      }
+
+      .framework-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .framework-panel-title {
+        font-size: 20px;
+      }
+
+      .section-content {
+        grid-template-columns: 1fr;
+        gap: 18px;
+        padding: 28px 18px 18px;
+      }
+
+      .section-page::before {
+        inset: 18px;
+      }
+
+      .section-title {
+        font-size: clamp(30px, 9vw, 44px);
+      }
+
+      .section-media-grid {
+        gap: 10px;
+      }
+
+      .section-two-col {
+        grid-template-columns: 1fr;
+      }
+
+      .css-media-row {
+        grid-template-columns: 1fr;
+      }
+
+      .section-code {
+        max-height: 220px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="slide is-active" data-slide="0" aria-label="主题介绍">
+      <div class="cover">
+        <div class="content">
+        <div class="left">
+          <div class="kicker">Front-End Training</div>
+          <h1>前端基础技术</h1>
+          <p class="subtitle">主题介绍 · 从页面结构到交互开发</p>
+          <p class="summary">这门课先从基础认知出发，理解前端、后端、数据库和 API 的关系，再进入 HTML、CSS、JavaScript 这些前端基础技术。</p>
+          <div class="chips" aria-label="课程核心模块">
+            <span class="chip">基础认知</span>
+            <span class="chip">HTML</span>
+            <span class="chip">CSS</span>
+            <span class="chip">JavaScript</span>
+            <span class="chip">工程规范</span>
+          </div>
+          <div class="meta" aria-label="课程信息">
+            <div class="meta-card">
+              <span class="meta-label">章节结构</span>
+              <span class="meta-value">一页一主题</span>
+            </div>
+            <div class="meta-card">
+              <span class="meta-label">讲解方式</span>
+              <span class="meta-value">循序渐进</span>
+            </div>
+            <div class="meta-card">
+              <span class="meta-label">目标对象</span>
+              <span class="meta-value">前端入门</span>
+            </div>
+          </div>
+        </div>
+
+        <aside class="right" aria-hidden="true">
+          <div class="window-bar">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+          <div class="stack">
+            <div class="block html">
+              <div class="block-label">HTML</div>
+              <div class="block-title">结构层</div>
+              <div class="block-desc">负责页面骨架、内容组织和语义表达。</div>
+            </div>
+            <div class="block css">
+              <div class="block-label">CSS</div>
+              <div class="block-title">样式层</div>
+              <div class="block-desc">负责布局、视觉表现和响应式适配。</div>
+            </div>
+            <div class="block js">
+              <div class="block-label">JavaScript</div>
+              <div class="block-title">交互层</div>
+              <div class="block-desc">负责行为逻辑、事件处理和数据联动。</div>
+            </div>
+          </div>
+          <div class="flow">
+            <span>结构</span>
+            <span>样式</span>
+            <span>交互</span>
+            <span>规范</span>
+          </div>
+        </aside>
+        </div>
+      </div>
+    </section>
+    <section class="slide" data-slide="1" aria-label="课程框架">
+      <div class="slide-content">
+        <header class="framework-head">
+          <div class="kicker">Course Outline</div>
+          <h2 class="framework-title">课程目录</h2>
+          <p class="framework-desc">这一页对应文档里的 [第一页]，先把两大部分讲清楚：基础学习路径，以及前端基础技术（基础入门）。</p>
+        </header>
+
+        <div class="framework-grid">
+          <article class="framework-panel">
+            <div class="framework-panel-head">
+              <div class="framework-index">Part 01</div>
+              <div class="framework-panel-title">第一部分：基础学习路径</div>
+              <div class="framework-panel-subtitle">基础认知 + 前端 + 后端 + 数据库</div>
+            </div>
+            <ul class="framework-list">
+              <li class="framework-item"><span class="framework-bullet">1</span><span>基础认知</span></li>
+              <li class="framework-item"><span class="framework-bullet">2</span><span>前端基础</span></li>
+              <li class="framework-item"><span class="framework-bullet">3</span><span>后端基础改</span></li>
+              <li class="framework-item"><span class="framework-bullet">4</span><span>数据库基础</span></li>
+            </ul>
+          </article>
+
+          <article class="framework-panel highlight">
+            <div class="framework-panel-head">
+              <div class="framework-index">Part 02</div>
+              <div class="framework-panel-title">第二部分：前端基础技术（基础入门）</div>
+              <div class="framework-panel-subtitle">HTML + CSS + JS</div>
+            </div>
+            <ul class="framework-list">
+              <li class="framework-item"><span class="framework-bullet">1</span><span>基础组件</span></li>
+              <li class="framework-item"><span class="framework-bullet">2</span><span>HTML</span></li>
+              <li class="framework-item"><span class="framework-bullet">3</span><span>CSS</span></li>
+              <li class="framework-item"><span class="framework-bullet">4</span><span>JS基础</span></li>
+              <li class="framework-item"><span class="framework-bullet">5</span><span>规范</span></li>
+            </ul>
+            <div class="framework-highlight-strip">
+              <div class="framework-highlight-label">讲解顺序</div>
+              <div class="framework-highlight-text">先把基础学习路径讲明白，再进入 HTML、CSS 和 JavaScript，最后补上前端规范。</div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section class="slide" data-slide="2" aria-label="基础认知">
+      <div class="section-page">
+        <div class="section-content">
+          <div class="section-left">
+            <div class="section-index">01 / 基础认知</div>
+            <h2 class="section-title">用户登录网站的完整流程</h2>
+            <p class="section-subtitle">用一个最常见的登录场景，把前端、后端、数据库和 API 的关系串起来。</p>
+            <p class="section-summary">前端负责接收输入和展示结果，后端负责处理逻辑和判断，数据库负责保存和查询数据，API 负责把请求和响应在各层之间传递。</p>
+            <ul class="section-points">
+              <li class="section-point"><span class="section-badge">1</span><span>前端页面输入账号密码，点击登录。</span></li>
+              <li class="section-point"><span class="section-badge">2</span><span>前端把数据包装成请求，通过 API 发送给后端。</span></li>
+              <li class="section-point"><span class="section-badge">3</span><span>后端去数据库里查账号和密码是否正确。</span></li>
+              <li class="section-point"><span class="section-badge">4</span><span>数据库返回结果，后端据此生成响应，再返回给前端。</span></li>
+            </ul>
+          </div>
+          <div class="section-right">
+            <div class="section-card primary">
+              <div class="section-card-label">流程</div>
+              <div class="section-card-title">前端发问 → API传话 → 后端处理 → 数据库存取 → 原路返回 → 前端显示</div>
+              <div class="section-card-desc">这是理解 Web 应用最基础的一条链路，也是后续学习接口、状态和数据流的入口。</div>
+            </div>
+            <div class="section-card">
+              <div class="section-card-label">问答提示</div>
+              <div class="section-card-title">改邮箱为什么不是只改前端？</div>
+              <div class="section-card-desc">因为“改完后下次打开还是新的”意味着数据要落到后端和数据库，不只是页面上的临时显示。</div>
+            </div>
+            <div class="section-code">前端：输入框 + 点击按钮
+API：传递请求
+后端：接收并处理
+数据库：保存和查询
+前端：展示结果</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="slide" data-slide="3" aria-label="前端基础">
+      <div class="section-page">
+        <div class="section-content">
+          <div class="section-left">
+            <div class="section-index">02 / 前端基础</div>
+            <h2 class="section-title">HTML：负责页面内容结构</h2>
+            <p class="section-subtitle">先讲结构层，先搞清楚页面“有什么”。</p>
+            <p class="section-summary">HTML 通过标签和语义定义页面骨架，决定标题、段落、按钮、输入框、图片等内容如何组织。</p>
+            <ul class="section-points">
+              <li class="section-point"><span class="section-badge">1</span><span>标签对：有开始和结束，比如 `<head></head>`。</span></li>
+              <li class="section-point"><span class="section-badge">2</span><span>固定结构：`<html><head><body>` 是页面的基础骨架。</span></li>
+              <li class="section-point"><span class="section-badge">3</span><span>语义化：标题、段落、按钮、输入框各用各的标签。</span></li>
+              <li class="section-point"><span class="section-badge">4</span><span>HTML 只负责内容结构，不负责样式和交互。</span></li>
+            </ul>
+          </div>
+          <div class="section-right">
+            <div class="section-image-block">
+              <div class="section-media-card">
+                <div class="section-media-title">HTML 演示图</div>
+                <img src="./image/1.PNG" alt="HTML 基础示意图">
+              </div>
+              <div class="section-card primary">
+                <div class="section-card-label">HTML 示例</div>
+                <div class="section-card-title">页面骨架与标签对</div>
+                <div class="section-card-desc">把网页先搭成结构，再谈样式和交互。</div>
+              </div>
+              <div class="section-code">
+                <div class="section-code-title">HTML 结构示例</div>
+                <pre>&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;页面标题&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;我是标题&lt;/h1&gt;
+    &lt;p&gt;我是段落&lt;/p&gt;
+    &lt;button&gt;按钮&lt;/button&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="slide" data-slide="4" aria-label="前端基础 CSS">
+      <div class="section-page">
+        <div class="section-content">
+          <div class="section-left">
+            <div class="section-index">03 / 前端基础</div>
+            <h2 class="section-title">CSS：负责页面样式和布局</h2>
+            <p class="section-subtitle">第二页只讲样式层，重点理解页面“长什么样”。</p>
+            <p class="section-summary">CSS 负责颜色、间距、大小、布局和响应式，是把 HTML 的内容变成可阅读、可展示界面的关键。</p>
+            <ul class="section-points">
+              <li class="section-point"><span class="section-badge">1</span><span>控制外观：颜色、边距、字体、背景。</span></li>
+              <li class="section-point"><span class="section-badge">2</span><span>控制布局：盒模型、对齐、排列、响应式。</span></li>
+              <li class="section-point"><span class="section-badge">3</span><span>可以把同一份 HTML 变成不同风格。</span></li>
+              <li class="section-point"><span class="section-badge">4</span><span>简写属性可以减少重复写法。</span></li>
+            </ul>
+          </div>
+          <div class="section-right css-right">
+            <div class="css-media-row">
+              <div class="section-media-card">
+                <div class="section-media-title">CSS 演示图</div>
+                <img src="./image/2.png" alt="CSS 基础示意图">
+              </div>
+              <div class="section-media-card">
+                <div class="section-media-title">CSS 演示图 2</div>
+                <img src="./image/3.png" alt="CSS 盒模型或布局示意图">
+              </div>
+            </div>
+            <div class="section-code">
+              <div class="section-code-title">CSS 示例</div>
+              <pre>.pad {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+  .pad-1 {
+    margin: 10px 20px 10px 20px;
+  }
+  .pad-2 {
+    margin: 10px 20px;
+  }</pre>
+            </div>
+            <div class="section-card primary">
+              <div class="section-card-label">CSS 重点</div>
+              <div class="section-card-title">样式、布局、响应式</div>
+              <div class="section-card-desc">先把一个页面从“有内容”变成“好看、好用、能适配”。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="slide" data-slide="5" aria-label="前端基础 JavaScript">
+      <div class="section-page">
+        <div class="section-content">
+          <div class="section-left">
+            <div class="section-index">04 / 前端基础</div>
+            <h2 class="section-title">JavaScript：负责交互、状态和请求</h2>
+            <p class="section-subtitle">第三页单独讲 JS，不再和 HTML / CSS 混在一起。</p>
+            <p class="section-summary">JavaScript 让网页“活过来”。它可以处理点击事件、切换样式、发起请求、读取返回数据，是前端里最直接和用户交互的一层。</p>
+            <ul class="section-points">
+              <li class="section-point"><span class="section-badge">1</span><span>没有 JS 的网页更像静态文档，有 JS 才能交互。</span></li>
+              <li class="section-point"><span class="section-badge">2</span><span>常见事件：click。</span></li>
+              <li class="section-point"><span class="section-badge">3</span><span>可以通过 `onclick` 改变元素样式。</span></li>
+              <li class="section-point"><span class="section-badge">4</span><span>也可以通过 `fetch` 发送 GET / POST 请求。</span></li>
+            </ul>
+          </div>
+          <div class="section-right">
+            <div class="section-media-card">
+              <div class="section-media-title">JavaScript 演示图</div>
+              <img src="./image/4.png" alt="JavaScript 交互示意图">
+            </div>
+            <div class="section-code">
+              <div class="section-code-title">点击变色示例</div>
+              <pre>html：
+&lt;h2 id="title"&gt;我是标题&lt;/h2&gt;
+&lt;button onclick="changeColor()"&gt;点击变色&lt;/button&gt;
+
+JS：
+//JS 部分：实现交互功能
+//1. 切换标题颜色
+function changeColor() {
+    let title = document.getElementById("title");
+    if (title.style.color === "red") {
+        title.style.color = "blue";
+    } else {
+        title.style.color = "red";
+    }
+}</pre>
+            </div>
+            <div class="section-code">
+              <div class="section-code-title">请求示例</div>
+              <pre>async function getRequest() {
+  const url = "https://jsonplaceholder.typicode.com/users?id=1&name=test";
+  const res = await fetch(url);
+  const data = await res.json();
+  return data;
+}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="slide" data-slide="6" aria-label="后端基础">
+      <div class="section-page">
+        <div class="section-content">
+          <div class="section-left">
+            <div class="section-index">05 / 后端基础</div>
+            <h2 class="section-title">后端负责处理请求和业务判断</h2>
+            <p class="section-subtitle">理解 GET 和 POST 的差别，是入门后端和接口交互最基础的一步。</p>
+            <p class="section-summary">后端接收前端传来的请求，处理逻辑后返回响应。不同请求方式适用于不同场景，查询用 GET，提交和修改通常用 POST。</p>
+            <ul class="section-points">
+              <li class="section-point"><span class="section-badge">1</span><span>GET：参数在 URL 上，适合查询、获取数据。</span></li>
+              <li class="section-point"><span class="section-badge">2</span><span>POST：参数放在 body 中，适合提交、新增、修改数据。</span></li>
+              <li class="section-point"><span class="section-badge">3</span><span>后端负责判断逻辑，不直接把数据写死在页面里。</span></li>
+              <li class="section-point"><span class="section-badge">4</span><span>接口的核心价值是把前端请求和后端处理连接起来。</span></li>
+            </ul>
+          </div>
+          <div class="section-right">
+            <div class="section-card primary">
+              <div class="section-card-label">对比</div>
+              <div class="section-card-title">GET 与 POST</div>
+              <div class="section-card-desc">GET 适合拿数据，POST 适合传数据。安全性、缓存、长度限制、使用场景都不一样。</div>
+            </div>
+            <div class="section-card">
+              <div class="section-card-label">重点</div>
+              <div class="section-card-title">请求 - 处理 - 响应</div>
+              <div class="section-card-desc">前端发送请求，后端判断并处理，最后返回结果给前端展示。</div>
+            </div>
+            <div class="section-media-card">
+              <div class="section-media-title">后端基础示意图</div>
+              <img src="./image/5.png" alt="后端请求响应示意图">
+            </div>
+            <div class="section-code">
+              <div class="section-code-title">GET / POST 对比</div>
+              <pre>| 对比维度 | GET 请求                      | POST 请求                  |
+| -------- | ----------------------------- | -------------------------- |
+| 传参方式 | 参数拼接在 URL 地址栏         | 参数放在请求体 body 中     |
+| 数据长度 | 受浏览器URL长度限制，传参短小 | 无长度限制，可传大量数据   |
+| 安全性   | 参数暴露在地址栏，不安全      | 参数隐藏在请求体，相对安全 |
+| 缓存     | 默认会被浏览器缓存            | 默认不缓存                 |
+| 使用场景 | 查询、获取数据（无数据修改）  | 提交、新增、修改数据       |</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="slide" data-slide="7" aria-label="数据库基础">
+      <div class="section-page">
+        <div class="section-content">
+          <div class="section-left">
+            <div class="section-index">06 / 数据库基础</div>
+            <h2 class="section-title">数据库负责长期保存数据</h2>
+            <p class="section-subtitle">前端界面上的内容要真正落地，最终还是要靠数据库保存。</p>
+            <p class="section-summary">数据库是前端、后端之外的第三个关键部分。数据能永久保存，业务才能“下次打开还在”。SQLite、MySQL 都是常见的基础数据库。</p>
+            <ul class="section-points">
+              <li class="section-point"><span class="section-badge">1</span><span>SQLite：文件型数据库，不需要单独安装服务。</span></li>
+              <li class="section-point"><span class="section-badge">2</span><span>MySQL：常见的关系型数据库，适合项目中长期使用。</span></li>
+              <li class="section-point"><span class="section-badge">3</span><span>增删改查是数据库最基础、最必须掌握的能力。</span></li>
+              <li class="section-point"><span class="section-badge">4</span><span>没有数据库，很多系统只能算临时页面，无法持续保存信息。</span></li>
+            </ul>
+          </div>
+          <div class="section-right">
+            <div class="section-card primary">
+              <div class="section-card-label">SQL</div>
+              <div class="section-card-title">四条必须掌握的语句</div>
+              <div class="section-card-desc">SELECT 查、INSERT 增、UPDATE 改、DELETE 删，是数据库入门的核心。</div>
+            </div>
+            <div class="section-code">SELECT * FROM users;
+
+INSERT INTO users (name, age) VALUES ('张三', 25);
+
+UPDATE users SET name = '哈哈' WHERE name = '张三';
+
+DELETE FROM users WHERE id = 1;</div>
+            <div class="section-card">
+              <div class="section-card-label">判断题</div>
+              <div class="section-card-title">什么系统最需要数据库？</div>
+              <div class="section-card-desc">只要数据需要下次再打开还能保留，基本都离不开数据库。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script>
+    (() => {
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      let index = 0;
+
+      const clampIndex = (value) => Math.max(0, Math.min(slides.length - 1, value));
+
+      const render = () => {
+        slides.forEach((slide, i) => {
+          const active = i === index;
+          slide.classList.toggle('is-active', active);
+          slide.setAttribute('aria-hidden', String(!active));
+        });
+      };
+
+      const go = (nextIndex) => {
+        const clamped = clampIndex(nextIndex);
+        if (clamped === index) return;
+        index = clamped;
+        render();
+      };
+
+      document.addEventListener('keydown', (event) => {
+        if (event.altKey || event.metaKey || event.ctrlKey) return;
+        if (event.key === 'ArrowRight' || event.key === 'ArrowDown' || event.key === 'PageDown' || event.key === ' ') {
+          event.preventDefault();
+          go(index + 1);
+        }
+        if (event.key === 'ArrowLeft' || event.key === 'ArrowUp' || event.key === 'PageUp') {
+          event.preventDefault();
+          go(index - 1);
+        }
+        if (event.key === 'Home') {
+          event.preventDefault();
+          go(0);
+        }
+        if (event.key === 'End') {
+          event.preventDefault();
+          go(slides.length - 1);
+        }
+      });
+
+      render();
+    })();
+  </script>
+</body>
+</html>

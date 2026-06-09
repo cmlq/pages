@@ -1,0 +1,4129 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>前端基础技术 - 课程演示</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --theme-primary: #0a84ff;
+      --theme-success: #30d158;
+      --theme-warning: #ff9f0a;
+      --theme-danger: #ff453a;
+      --bg-primary: #000000;
+      --bg-secondary: #1c1c1e;
+      --surface-primary: rgba(28, 28, 30, 0.92);
+      --surface-secondary: rgba(28, 28, 30, 0.68);
+      --separator: rgba(84, 84, 88, 0.2);
+      --label-primary: #ffffff;
+      --label-secondary: #ebebf5;
+      --label-tertiary: #8e8e93;
+      --hero-glow: rgba(10, 132, 255, 0.16);
+      --hero-glow-soft: rgba(10, 132, 255, 0.08);
+      --hero-line: rgba(10, 132, 255, 0.22);
+      --hero-surface: rgba(28, 28, 30, 0.96);
+      --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.44);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.28);
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+      background:
+        radial-gradient(circle at 14% 16%, var(--hero-glow), transparent 28%),
+        radial-gradient(circle at 86% 12%, var(--hero-glow-soft), transparent 24%),
+        linear-gradient(180deg, var(--bg-primary), var(--bg-secondary));
+      color: var(--label-primary);
+    }
+
+    body {
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(135deg, rgba(28, 28, 30, 0.92), transparent 36%),
+        radial-gradient(circle at 50% 100%, var(--hero-glow-soft), transparent 30%);
+      opacity: 0.92;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at top center, rgba(255, 255, 255, 0.08), transparent 46%);
+      opacity: 0.45;
+    }
+
+    .deck {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+    }
+
+    .slides {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px) scale(0.985);
+      transition: opacity 0.34s ease, transform 0.34s ease;
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+
+    .slide-shell {
+      width: min(1280px, calc(100vw - 48px), calc((100vh - 128px) * 16 / 9));
+      aspect-ratio: 16 / 9;
+      max-height: calc(100vh - 128px);
+      height: calc(100vh - 128px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-radius: 36px;
+      background: linear-gradient(180deg, rgba(28, 28, 30, 0.96), rgba(28, 28, 30, 0.9));
+      border: 0.5px solid var(--separator);
+      box-shadow: var(--shadow-lg);
+      backdrop-filter: blur(20px);
+      position: relative;
+      isolation: isolate;
+    }
+
+    .slide-shell::before {
+      content: "";
+      position: absolute;
+      inset: 8.5% 9%;
+      border-radius: 32px;
+      /* border: 1px solid var(--hero-line); */
+      background:
+        radial-gradient(circle at 18% 18%, var(--hero-glow-soft), transparent 24%),
+        linear-gradient(180deg, var(--surface-secondary), transparent);
+      z-index: -1;
+    }
+
+    .slide-frame {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: clamp(34px, 3.2vw, 42px) clamp(34px, 3.4vw, 44px) clamp(30px, 2.8vw, 38px);
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-gutter: stable;
+    }
+
+    .slide-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: rgba(10, 132, 255, 0.12);
+      color: var(--theme-primary);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .slide-title {
+      margin: 14px 0 0;
+      font-size: clamp(44px, 5.6vw, 84px);
+      line-height: 1.02;
+      letter-spacing: -0.06em;
+      font-weight: 800;
+      color: var(--label-primary);
+    }
+
+    .slide-subtitle {
+      margin: 12px 0 0;
+      /* max-width: 58ch; */
+      color: var(--label-secondary);
+      font-size: clamp(16px, 1.6vw, 20px);
+      line-height: 1.75;
+    }
+
+    .slide-counter {
+      min-width: 92px;
+      padding: 14px 16px;
+      border-radius: 22px;
+      border: 1px solid var(--separator);
+      background: rgba(255, 255, 255, 0.05);
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .slide-counter strong {
+      display: block;
+      font-size: 28px;
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    .slide-counter span {
+      display: block;
+      margin-top: 4px;
+      color: var(--label-tertiary);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .cover-grid,
+    .content-grid {
+      flex: 1;
+      display: grid;
+      gap: 18px;
+      min-height: 0;
+    }
+
+    .cover-grid {
+      grid-template-columns: minmax(0, 1.12fr) minmax(300px, 0.88fr);
+      align-items: stretch;
+    }
+
+    .cover-grid .card {
+      grid-column: 1 / -1;
+    }
+
+    .content-grid {
+      grid-template-columns: minmax(0, 1.02fr) minmax(320px, 0.98fr);
+    }
+
+    .card,
+    .note-card,
+    .part-card,
+    .focus-card {
+      border-radius: 24px;
+      border: 1px solid var(--separator);
+      box-shadow: var(--shadow-sm);
+      backdrop-filter: blur(20px);
+    }
+
+    .card {
+      padding: 18px 20px;
+      background: linear-gradient(180deg, rgba(28, 28, 30, 0.92), rgba(28, 28, 30, 0.78));
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .card-title {
+      font-size: 22px;
+      line-height: 1.16;
+      font-weight: 800;
+      color: var(--label-primary);
+      margin: 0;
+    }
+
+    .card-subtitle {
+      margin: 0;
+      color: var(--label-secondary);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .script {
+      display: grid;
+      gap: 10px;
+      padding: 18px 20px;
+      background: linear-gradient(180deg, rgba(28, 28, 30, 0.92), rgba(28, 28, 30, 0.78));
+      color: var(--label-primary);
+      font-size: 15px;
+      line-height: 1.7;
+      border-radius: 24px;
+      border: 1px solid var(--separator);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .script p {
+      margin: 0;
+    }
+
+    .script .lead-line {
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .script .quote {
+      padding: 12px 14px;
+      border-left: 4px solid var(--theme-primary);
+      background: rgba(10, 132, 255, 0.12);
+      border-radius: 16px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .meta {
+      padding: 12px 14px;
+      border-radius: 20px;
+      background: var(--surface-secondary);
+      border: 1px solid var(--separator);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .meta-label,
+    .note-label,
+    .part-tag,
+    .vision-label,
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--label-tertiary);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .meta-label {
+      background: rgba(10, 132, 255, 0.12);
+      color: #8cc8ff;
+    }
+
+    .meta-value {
+      display: block;
+      margin-top: 8px;
+      font-size: 14px;
+      line-height: 1.5;
+      font-weight: 700;
+      color: var(--label-primary);
+    }
+
+    .focus-card {
+      padding: 20px;
+      background: linear-gradient(180deg, rgba(10, 132, 255, 0.14), rgba(28, 28, 30, 0.9));
+      display: grid;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .focus-card::before {
+      content: "";
+      position: absolute;
+      inset: -18% -10% auto auto;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(10, 132, 255, 0.18), transparent 68%);
+      pointer-events: none;
+    }
+
+    .focus-title {
+      position: relative;
+      z-index: 1;
+      font-size: 18px;
+      line-height: 1.4;
+      font-weight: 800;
+      color: var(--label-primary);
+      margin: 0;
+    }
+
+    .focus-copy {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      color: var(--label-secondary);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .pills {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--label-primary);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .pill.blue {
+      background: rgba(10, 132, 255, 0.14);
+      color: #8cc8ff;
+      border-color: rgba(10, 132, 255, 0.16);
+    }
+
+    .pill.green {
+      background: rgba(48, 209, 88, 0.12);
+      color: #a8f0b8;
+      border-color: rgba(48, 209, 88, 0.16);
+    }
+
+    .pill.red {
+      background: rgba(255, 69, 58, 0.12);
+      color: #ffb3ad;
+      border-color: rgba(255, 69, 58, 0.16);
+    }
+
+    .section-head {
+      display: grid;
+      gap: 10px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: clamp(28px, 3.8vw, 44px);
+      line-height: 1.08;
+      letter-spacing: -0.06em;
+      color: var(--label-primary);
+    }
+
+    .section-subtitle {
+      margin: 0;
+      color: var(--label-secondary);
+      font-size: 16px;
+      line-height: 1.75;
+      max-width: 56ch;
+    }
+
+    .part-list {
+      display: grid;
+      gap: 12px;
+      min-height: 0;
+    }
+
+    .part-card {
+      position: relative;
+      overflow: hidden;
+      padding: 20px;
+      background: linear-gradient(180deg, rgba(28, 28, 30, 0.92), rgba(28, 28, 30, 0.78));
+      display: grid;
+      gap: 10px;
+    }
+
+    .part-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 100% 0%, rgba(10, 132, 255, 0.12), transparent 28%);
+      pointer-events: none;
+    }
+
+    .part-card.alt::before {
+      background: radial-gradient(circle at 100% 0%, rgba(255, 69, 58, 0.12), transparent 28%);
+    }
+
+    .part-card h3 {
+      margin: 0;
+      position: relative;
+      z-index: 1;
+      font-size: 20px;
+      line-height: 1.35;
+      color: var(--label-primary);
+    }
+
+    .part-card p {
+      margin: 0;
+      position: relative;
+      z-index: 1;
+      color: var(--label-secondary);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .login-flow-page .content-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: stretch;
+      gap: 16px;
+    }
+
+    .login-flow-page .part-list {
+      display: grid;
+      gap: 10px;
+      min-height: 0;
+      height: 100%;
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+    }
+
+    .login-flow-page .part-card {
+      padding: 16px 18px;
+      gap: 8px;
+      height: 100%;
+      align-content: start;
+    }
+
+    .login-flow-page .part-card h3 {
+      font-size: 17px;
+      line-height: 1.32;
+    }
+
+    .login-flow-page .part-card > p {
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .login-flow-page .checklist {
+      gap: 7px;
+      margin-top: 2px;
+    }
+
+    .login-flow-page .check {
+      grid-template-columns: 22px 1fr;
+      gap: 7px;
+    }
+
+    .login-flow-page .check-mark {
+      width: 22px;
+      height: 22px;
+      font-size: 11px;
+      margin-top: 1px;
+    }
+
+    .login-flow-page .check-text {
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .login-flow-page .notes {
+      display: grid;
+      gap: 10px;
+      min-height: 0;
+      height: 100%;
+      grid-template-rows: minmax(0, 1fr) minmax(0, 0.72fr) minmax(0, 1.08fr);
+    }
+
+    .login-flow-page .note-card,
+    .login-flow-page .focus-card {
+      padding: 15px 16px;
+      gap: 10px;
+      height: 100%;
+      align-content: start;
+    }
+
+    .login-flow-page .note-card p,
+    .login-flow-page .note-card li,
+    .login-flow-page .focus-copy {
+      font-size: 13px;
+      line-height: 1.52;
+    }
+
+    .login-flow-page .focus-title {
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .qa-page .content-grid,
+    .foundation-page .content-grid {
+      align-items: start;
+    }
+
+    .foundation-page .content-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: repeat(3, minmax(0, 1fr));
+      align-items: stretch;
+      gap: 14px;
+    }
+
+    .qa-page .content-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .qa-page .part-list,
+    .foundation-page .part-list {
+      display: grid;
+      gap: 10px;
+      min-height: 0;
+    }
+
+    .foundation-page .part-list,
+    .foundation-page .notes {
+      display: contents;
+    }
+
+    .qa-page .part-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-auto-rows: minmax(0, 1fr);
+      align-items: stretch;
+    }
+
+    .qa-page .part-card,
+    .foundation-page .part-card {
+      padding: 16px 18px;
+      gap: 8px;
+      height: 100%;
+      align-content: start;
+    }
+
+    .qa-page .part-card:nth-child(3) {
+      grid-column: 1 / -1;
+    }
+
+    .qa-page .part-card h3,
+    .foundation-page .part-card h3 {
+      font-size: 17px;
+      line-height: 1.3;
+    }
+
+    .qa-page .part-card > p,
+    .foundation-page .part-card > p {
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .qa-page .checklist,
+    .foundation-page .checklist {
+      gap: 7px;
+      margin-top: 2px;
+    }
+
+    .qa-page .check,
+    .foundation-page .check {
+      grid-template-columns: 22px 1fr;
+      gap: 7px;
+    }
+
+    .qa-page .check-mark,
+    .foundation-page .check-mark {
+      width: 22px;
+      height: 22px;
+      font-size: 11px;
+      margin-top: 1px;
+    }
+
+    .qa-page .check-text,
+    .foundation-page .check-text {
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .qa-page .question-title {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.4;
+      color: var(--label-primary);
+    }
+
+    .qa-page .question-options {
+      display: grid;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .qa-page .question-option {
+      padding: 9px 12px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: var(--label-secondary);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .qa-page .question-hint {
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: rgba(10, 132, 255, 0.08);
+      border: 1px solid rgba(10, 132, 255, 0.14);
+      color: var(--label-secondary);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .qa-page .note-card,
+    .foundation-page .note-card,
+    .foundation-page .focus-card {
+      padding: 15px 16px;
+      gap: 10px;
+      height: 100%;
+      align-content: start;
+    }
+
+    .qa-page .note-card p,
+    .qa-page .note-card li,
+    .foundation-page .note-card p,
+    .foundation-page .note-card li,
+    .foundation-page .focus-copy {
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .qa-page .qa-answer {
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(10, 132, 255, 0.08);
+      border: 1px solid rgba(10, 132, 255, 0.14);
+      color: var(--label-secondary);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .foundation-page .intro-panel {
+      padding: 20px;
+      border-radius: 24px;
+      border: 1px solid var(--separator);
+      background: linear-gradient(180deg, rgba(28, 28, 30, 0.92), rgba(28, 28, 30, 0.78));
+      box-shadow: var(--shadow-sm);
+      display: grid;
+      gap: 12px;
+      min-height: 0;
+      height: 100%;
+      align-content: start;
+    }
+
+    .foundation-page .intro-panel p {
+      margin: 0;
+      color: var(--label-secondary);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .foundation-page .topic-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .foundation-page .topic-card {
+      padding: 16px;
+      border-radius: 20px;
+      border: 1px solid var(--separator);
+      background: rgba(255, 255, 255, 0.04);
+      display: grid;
+      gap: 8px;
+    }
+
+    .foundation-page .topic-card h4 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.35;
+      color: var(--label-primary);
+    }
+
+    .foundation-page .topic-card p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--label-secondary);
+    }
+
+    .foundation-page .intro-panel {
+      grid-column: 1 / 2;
+      grid-row: 1 / 2;
+    }
+
+    .foundation-page .part-card {
+      grid-column: 1 / 2;
+      grid-row: 2 / 3;
+    }
+
+    .foundation-page .notes > .note-card:nth-child(1) {
+      grid-column: 1 / 2;
+      grid-row: 3 / 4;
+    }
+
+    .foundation-page .notes > .note-card:nth-child(2) {
+      grid-column: 2 / 3;
+      grid-row: 1 / 2;
+    }
+
+    .foundation-page .notes > .note-card:nth-child(3) {
+      grid-column: 2 / 3;
+      grid-row: 2 / 4;
+    }
+
+    .foundation-page .note-card h3 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.35;
+      color: var(--label-primary);
+    }
+
+    .foundation-page .note-card ul {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .foundation-page .note-card code {
+      padding: 0 4px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #cfe6ff;
+    }
+
+    .html-page .content-grid {
+      align-items: start;
+      grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+    }
+
+    .html-page .part-list,
+    .html-page .notes {
+      display: grid;
+      gap: 12px;
+      min-height: 0;
+    }
+
+    .html-page .intro-panel {
+      padding: 20px;
+      border-radius: 24px;
+      border: 1px solid var(--separator);
+      background: linear-gradient(180deg, rgba(28, 28, 30, 0.92), rgba(28, 28, 30, 0.78));
+      box-shadow: var(--shadow-sm);
+      display: grid;
+      gap: 12px;
+    }
+
+    .html-page .intro-panel p {
+      margin: 0;
+      color: var(--label-secondary);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .html-page .code-card {
+      display: grid;
+      gap: 12px;
+      padding: 20px;
+      border-radius: 24px;
+      border: 1px solid var(--separator);
+      background: linear-gradient(180deg, rgba(28, 28, 30, 0.94), rgba(28, 28, 30, 0.8));
+      box-shadow: var(--shadow-sm);
+      min-height: 0;
+    }
+
+    .html-page .code-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .html-page .code-title {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.35;
+      font-weight: 800;
+      color: var(--label-primary);
+    }
+
+    .html-page .code-lang {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: rgba(10, 132, 255, 0.12);
+      color: #8cc8ff;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .html-page pre {
+      margin: 0;
+      padding: 16px 18px;
+      border-radius: 20px;
+      background: #0f1116;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      overflow: auto;
+      max-height: 360px;
+      scrollbar-gutter: stable;
+    }
+
+    .html-page pre code {
+      display: block;
+      color: #d7e3ff;
+      font-size: 13px;
+      line-height: 1.7;
+      tab-size: 2;
+      white-space: pre;
+      font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+
+    .html-page .section-block {
+      padding: 18px 20px;
+      border-radius: 22px;
+      border: 1px solid var(--separator);
+      background: rgba(255, 255, 255, 0.04);
+      display: grid;
+      gap: 10px;
+    }
+
+    .html-page .section-block h3 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.35;
+      color: var(--label-primary);
+    }
+
+    .html-page .section-block p,
+    .html-page .section-block li {
+      margin: 0;
+      color: var(--label-secondary);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .html-page .section-block ul {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .tags-page .content-grid {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      align-items: start;
+    }
+
+    .tags-page .code-card {
+      display: grid;
+      gap: 12px;
+      padding: 20px;
+      border-radius: 24px;
+      border: 1px solid var(--separator);
+      background: linear-gradient(180deg, rgba(28, 28, 30, 0.94), rgba(28, 28, 30, 0.8));
+      box-shadow: var(--shadow-sm);
+      min-height: 0;
+    }
+
+    .tags-page .code-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .tags-page .code-title {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.35;
+      font-weight: 800;
+      color: var(--label-primary);
+    }
+
+    .tags-page .code-lang {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: rgba(10, 132, 255, 0.12);
+      color: #8cc8ff;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .tags-page pre {
+      margin: 0;
+      padding: 16px 18px;
+      border-radius: 20px;
+      background: #0f1116;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      overflow: auto;
+      max-height: clamp(280px, 42vh, 380px);
+      scrollbar-gutter: stable;
+    }
+
+    .tags-page pre code {
+      display: block;
+      color: #d7e3ff;
+      font-size: 13px;
+      line-height: 1.7;
+      tab-size: 2;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+
+    .tags-page .markdown-card {
+      display: grid;
+      gap: 14px;
+      padding: 20px;
+      border-radius: 24px;
+      border: 1px solid var(--separator);
+      background: linear-gradient(180deg, rgba(28, 28, 30, 0.94), rgba(28, 28, 30, 0.8));
+      box-shadow: var(--shadow-sm);
+      min-height: 0;
+    }
+
+    .tags-page .markdown-head {
+      display: grid;
+      gap: 8px;
+    }
+
+    .tags-page .markdown-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: rgba(10, 132, 255, 0.12);
+      color: #8cc8ff;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .tags-page .markdown-title {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.35;
+      font-weight: 800;
+      color: var(--label-primary);
+    }
+
+    .tags-page .markdown-subtitle {
+      margin: 0;
+      color: var(--label-secondary);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .tags-page .markdown-block {
+      display: grid;
+      gap: 10px;
+      padding: 16px 18px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .tags-page .markdown-block h4 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.35;
+      color: var(--label-primary);
+    }
+
+    .tags-page .markdown-block p,
+    .tags-page .markdown-block li {
+      margin: 0;
+      color: var(--label-secondary);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .tags-page .markdown-block ul {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .tags-page .markdown-block strong {
+      color: #ffffff;
+    }
+
+    .form-page .content-grid {
+      grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+      align-items: start;
+    }
+
+    .form-page .code-card {
+      display: grid;
+      gap: 12px;
+      padding: 20px;
+      border-radius: 24px;
+      border: 1px solid var(--separator);
+      background: linear-gradient(180deg, rgba(28, 28, 30, 0.94), rgba(28, 28, 30, 0.8));
+      box-shadow: var(--shadow-sm);
+      min-height: 0;
+    }
+
+    .form-page .code-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .form-page .code-title {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.35;
+      font-weight: 800;
+      color: var(--label-primary);
+    }
+
+    .form-page .code-lang {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: rgba(10, 132, 255, 0.12);
+      color: #8cc8ff;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .form-page pre {
+      margin: 0;
+      padding: 16px 18px;
+      border-radius: 20px;
+      background: #0f1116;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      overflow: auto;
+      max-height: clamp(360px, 52vh, 520px);
+      scrollbar-gutter: stable;
+    }
+
+    .form-page pre code {
+      display: block;
+      color: #d7e3ff;
+      font-size: 13px;
+      line-height: 1.65;
+      tab-size: 2;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+
+    .form-page .info-card {
+      display: grid;
+      gap: 12px;
+      padding: 20px;
+      border-radius: 24px;
+      border: 1px solid var(--separator);
+      background: linear-gradient(180deg, rgba(28, 28, 30, 0.94), rgba(28, 28, 30, 0.8));
+      box-shadow: var(--shadow-sm);
+      min-height: 0;
+    }
+
+    .form-page .info-card h3 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.35;
+      color: var(--label-primary);
+    }
+
+    .form-page .info-card p,
+    .form-page .info-card li,
+    .form-page .demo-link {
+      margin: 0;
+      color: var(--label-secondary);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .form-page .info-card ul {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .form-page .demo-link {
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(10, 132, 255, 0.16);
+      background: rgba(10, 132, 255, 0.08);
+      overflow-wrap: anywhere;
+    }
+
+    .css-page .content-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+      align-items: stretch;
+      gap: 16px;
+    }
+
+    .css-page .code-card,
+    .css-page .info-card,
+    .css-page .figure-card {
+      display: grid;
+      gap: 10px;
+      padding: 16px 18px;
+      border-radius: 22px;
+      border: 1px solid var(--separator);
+      background: linear-gradient(180deg, rgba(28, 28, 30, 0.92), rgba(28, 28, 30, 0.78));
+      box-shadow: var(--shadow-sm);
+      min-height: 0;
+      align-content: start;
+    }
+
+    .css-page .code-card {
+      grid-column: 1 / 2;
+      grid-row: 1 / 2;
+    }
+
+    .css-page .code-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .css-page .code-title,
+    .css-page .info-card h3,
+    .css-page .figure-card h3 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.35;
+      color: var(--label-primary);
+    }
+
+    .css-page .code-lang {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(10, 132, 255, 0.2);
+      background: rgba(10, 132, 255, 0.12);
+      color: #b7dbff;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .css-page pre {
+      margin: 0;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: #0f1116;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      overflow: auto;
+      max-height: clamp(280px, 40vh, 380px);
+      scrollbar-gutter: stable;
+    }
+
+    .css-page pre code {
+      display: block;
+      color: #d7e3ff;
+      font-size: 12px;
+      line-height: 1.55;
+      white-space: pre;
+      word-break: break-word;
+      font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+
+    .css-page .notes {
+      display: contents;
+    }
+
+    .css-page .notes .info-card:nth-child(1) {
+      grid-column: 2 / 3;
+      grid-row: 1 / 2;
+    }
+
+    .css-page .notes .info-card:nth-child(2) {
+      grid-column: 1 / 2;
+      grid-row: 2 / 3;
+    }
+
+    .css-page .notes .figure-card {
+      grid-column: 2 / 3;
+      grid-row: 2 / 3;
+      overflow: hidden;
+    }
+
+    .css-page .info-card p,
+    .css-page .info-card li,
+    .css-page .figure-caption {
+      margin: 0;
+      color: var(--label-secondary);
+      font-size: 13px;
+      line-height: 1.62;
+    }
+
+    .css-page .demo-link {
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(10, 132, 255, 0.16);
+      background: rgba(10, 132, 255, 0.08);
+      color: #dfeeff;
+      text-decoration: none;
+      overflow-wrap: anywhere;
+    }
+
+    .css-page .info-card ul {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .css-page .figure-card img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 108px;
+      object-fit: contain;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.04);
+      cursor: zoom-in;
+    }
+
+    .tab-page .content-grid {
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+      align-items: start;
+    }
+
+    .tab-page .info-card,
+    .tab-page .flow-card {
+      display: grid;
+      gap: 12px;
+      padding: 20px;
+      border-radius: 24px;
+      border: 1px solid var(--separator);
+      background: linear-gradient(180deg, rgba(28, 28, 30, 0.92), rgba(28, 28, 30, 0.78));
+      box-shadow: var(--shadow-sm);
+      min-height: 0;
+    }
+
+    .tab-page .info-card h3,
+    .tab-page .flow-card h3 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.35;
+      color: var(--label-primary);
+    }
+
+    .tab-page .info-card p,
+    .tab-page .info-card li,
+    .tab-page .flow-card p {
+      margin: 0;
+      color: var(--label-secondary);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .tab-page .info-card ul {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .tab-page .pill-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .tab-page .pill-box {
+      padding: 16px 18px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.04);
+      display: grid;
+      gap: 6px;
+    }
+
+    .tab-page .pill-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .tab-page .pill-copy {
+      color: var(--label-secondary);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .tab-page .demo-link {
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(10, 132, 255, 0.16);
+      background: rgba(10, 132, 255, 0.08);
+      color: #dfeeff;
+      text-decoration: none;
+      overflow-wrap: anywhere;
+    }
+
+    .js-page .content-grid {
+      grid-template-columns: minmax(0, 1.02fr) minmax(320px, 0.98fr);
+      align-items: stretch;
+      gap: 16px;
+    }
+
+    .js-page .info-card,
+    .js-page .focus-card {
+      display: grid;
+      gap: 10px;
+      padding: 16px 18px;
+      border-radius: 22px;
+      border: 1px solid var(--separator);
+      background: linear-gradient(180deg, rgba(28, 28, 30, 0.92), rgba(28, 28, 30, 0.78));
+      box-shadow: var(--shadow-sm);
+      min-height: 0;
+      height: 100%;
+      align-content: start;
+    }
+
+    .js-page .info-card h3,
+    .js-page .focus-card h3 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.35;
+      color: var(--label-primary);
+    }
+
+    .js-page .info-card p,
+    .js-page .info-card li,
+    .js-page .focus-card p {
+      margin: 0;
+      color: var(--label-secondary);
+      font-size: 13px;
+      line-height: 1.62;
+    }
+
+    .js-page .info-card ul {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .js-page .pill-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .js-page .pill-box {
+      padding: 12px 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.04);
+      display: grid;
+      gap: 4px;
+    }
+
+    .js-page .pill-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .js-page .pill-copy {
+      color: var(--label-secondary);
+      font-size: 13px;
+      line-height: 1.58;
+    }
+
+    .js-page .demo-link {
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(10, 132, 255, 0.16);
+      background: rgba(10, 132, 255, 0.08);
+      color: #dfeeff;
+      text-decoration: none;
+      overflow-wrap: anywhere;
+    }
+
+    .example-page .content-grid {
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+      align-items: stretch;
+      gap: 16px;
+    }
+
+    .example-page .code-card,
+    .example-page .info-card {
+      display: grid;
+      gap: 10px;
+      padding: 16px 18px;
+      border-radius: 22px;
+      border: 1px solid var(--separator);
+      background: linear-gradient(180deg, rgba(28, 28, 30, 0.92), rgba(28, 28, 30, 0.78));
+      box-shadow: var(--shadow-sm);
+      min-height: 0;
+      height: 100%;
+      align-content: start;
+    }
+
+    .example-page .code-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .example-page .code-title,
+    .example-page .info-card h3 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.35;
+      color: var(--label-primary);
+    }
+
+    .example-page .code-lang {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(10, 132, 255, 0.2);
+      background: rgba(10, 132, 255, 0.12);
+      color: #b7dbff;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .example-page pre {
+      margin: 0;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: #0f1116;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      overflow: auto;
+      max-height: clamp(300px, 44vh, 420px);
+      scrollbar-gutter: stable;
+    }
+
+    .example-page pre code {
+      display: block;
+      color: #d7e3ff;
+      font-size: 12px;
+      line-height: 1.5;
+      white-space: pre;
+      word-break: break-word;
+      font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+
+    .example-page .info-card p,
+    .example-page .info-card li {
+      margin: 0;
+      color: var(--label-secondary);
+      font-size: 13px;
+      line-height: 1.62;
+    }
+
+    .example-page .info-card ul {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .example-page .demo-link {
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(10, 132, 255, 0.16);
+      background: rgba(10, 132, 255, 0.08);
+      color: #dfeeff;
+      text-decoration: none;
+      overflow-wrap: anywhere;
+    }
+
+    .syntax-page .content-grid {
+      grid-template-columns: minmax(0, 1.06fr) minmax(320px, 0.94fr);
+      align-items: stretch;
+      gap: 16px;
+    }
+
+    .syntax-page .code-card,
+    .syntax-page .info-card {
+      display: grid;
+      gap: 10px;
+      padding: 16px 18px;
+      border-radius: 22px;
+      border: 1px solid var(--separator);
+      background: linear-gradient(180deg, rgba(28, 28, 30, 0.92), rgba(28, 28, 30, 0.78));
+      box-shadow: var(--shadow-sm);
+      min-height: 0;
+      height: 100%;
+      align-content: start;
+    }
+
+    .syntax-page .code-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .syntax-page .code-title,
+    .syntax-page .info-card h3 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.35;
+      color: var(--label-primary);
+    }
+
+    .syntax-page .code-lang {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(10, 132, 255, 0.2);
+      background: rgba(10, 132, 255, 0.12);
+      color: #b7dbff;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .syntax-page pre {
+      margin: 0;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: #0f1116;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      overflow: auto;
+      max-height: clamp(180px, 22vh, 240px);
+      scrollbar-gutter: stable;
+    }
+
+    .syntax-page pre code {
+      display: block;
+      color: #d7e3ff;
+      font-size: 12px;
+      line-height: 1.52;
+      white-space: pre;
+      word-break: break-word;
+      font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+
+    .syntax-page .stack {
+      display: grid;
+      gap: 10px;
+      min-height: 0;
+      height: 100%;
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+    }
+
+    .syntax-page .info-card p,
+    .syntax-page .info-card li {
+      margin: 0;
+      color: var(--label-secondary);
+      font-size: 13px;
+      line-height: 1.62;
+    }
+
+    .syntax-page .info-card ul {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .syntax-page .demo-link {
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(10, 132, 255, 0.16);
+      background: rgba(10, 132, 255, 0.08);
+      color: #dfeeff;
+      text-decoration: none;
+      overflow-wrap: anywhere;
+    }
+
+    .js-topic-page .content-grid,
+    .spec-page .content-grid {
+      align-items: start;
+    }
+
+    .js-topic-page .content-grid {
+      grid-template-columns: minmax(0, 1.04fr) minmax(320px, 0.96fr);
+    }
+
+    .js-topic-page.split-page .content-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: stretch;
+    }
+
+    .js-topic-page.split-page .stack {
+      display: grid;
+      gap: 12px;
+      min-height: 0;
+      height: 100%;
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+    }
+
+    .js-topic-page.split-page .code-card,
+    .js-topic-page.split-page .info-card {
+      height: 100%;
+      align-content: start;
+    }
+
+    .judge-page .content-grid {
+      grid-template-columns: minmax(0, 0.98fr) minmax(0, 1.02fr);
+      align-items: stretch;
+    }
+
+    .logic-page .content-grid {
+      align-items: stretch;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .logic-page .stack,
+    .logic-page .info-card {
+      min-height: 0;
+      height: 100%;
+    }
+
+    .logic-page .stack {
+      display: grid;
+      gap: 0;
+    }
+
+    .logic-page .code-card,
+    .logic-page .info-card {
+      display: grid;
+      gap: 8px;
+      padding: 14px 16px;
+      border-radius: 20px;
+      border: 1px solid var(--separator);
+      background: linear-gradient(180deg, rgba(28, 28, 30, 0.92), rgba(28, 28, 30, 0.78));
+      box-shadow: var(--shadow-sm);
+      min-height: 176px;
+      height: 100%;
+      align-content: start;
+    }
+
+    .logic-page .code-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .logic-page .code-title,
+    .logic-page .info-card h3 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.3;
+      color: var(--label-primary);
+    }
+
+    .logic-page .code-lang {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(10, 132, 255, 0.2);
+      background: rgba(10, 132, 255, 0.12);
+      color: #b7dbff;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .logic-page pre {
+      margin: 0;
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: #0f1116;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+      max-height: none;
+      scrollbar-width: none;
+    }
+
+    .logic-page pre::-webkit-scrollbar {
+      display: none;
+    }
+
+    .logic-page pre code {
+      display: block;
+      color: #d7e3ff;
+      font-size: 11px;
+      line-height: 1.45;
+      white-space: pre;
+      word-break: break-word;
+      font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+
+    .logic-page .info-card p,
+    .logic-page .info-card li {
+      margin: 0;
+      color: var(--label-secondary);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .logic-page .info-card ul {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .judge-page .stack,
+    .judge-page .info-card {
+      min-height: 0;
+    }
+
+    .judge-page .stack {
+      display: grid;
+      gap: 0;
+    }
+
+    .judge-page .code-card,
+    .judge-page .info-card {
+      display: grid;
+      gap: 10px;
+      padding: 16px 18px;
+      border-radius: 22px;
+      border: 1px solid var(--separator);
+      background: linear-gradient(180deg, rgba(28, 28, 30, 0.92), rgba(28, 28, 30, 0.78));
+      box-shadow: var(--shadow-sm);
+      min-height: 0;
+      height: 100%;
+      align-content: start;
+    }
+
+    .judge-page .code-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .judge-page .code-title,
+    .judge-page .info-card h3 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.3;
+      color: var(--label-primary);
+    }
+
+    .judge-page .code-lang {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(10, 132, 255, 0.2);
+      background: rgba(10, 132, 255, 0.12);
+      color: #b7dbff;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .judge-page pre {
+      margin: 0;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: #0f1116;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+      max-height: none;
+      scrollbar-width: none;
+    }
+
+    .judge-page pre::-webkit-scrollbar {
+      display: none;
+    }
+
+    .judge-page pre code {
+      display: block;
+      color: #d7e3ff;
+      font-size: 12px;
+      line-height: 1.52;
+      white-space: pre;
+      word-break: break-word;
+      font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+
+    .judge-page .info-card p,
+    .judge-page .info-card li {
+      margin: 0;
+      color: var(--label-secondary);
+      font-size: 13px;
+      line-height: 1.62;
+    }
+
+    .judge-page .info-card ul {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .dom-page .content-grid {
+      grid-template-columns: minmax(0, 1.06fr) minmax(0, 0.94fr);
+      align-items: stretch;
+    }
+
+    .dom-page .stack {
+      display: grid;
+      gap: 10px;
+      min-height: 0;
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+    }
+
+    .dom-page .code-card,
+    .dom-page .info-card {
+      display: grid;
+      gap: 10px;
+      padding: 16px 18px;
+      border-radius: 22px;
+      border: 1px solid var(--separator);
+      background: linear-gradient(180deg, rgba(28, 28, 30, 0.92), rgba(28, 28, 30, 0.78));
+      box-shadow: var(--shadow-sm);
+      min-height: 0;
+      height: 100%;
+      align-content: start;
+    }
+
+    .dom-page .code-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .dom-page .code-title,
+    .dom-page .info-card h3 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.3;
+      color: var(--label-primary);
+    }
+
+    .dom-page .code-lang {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(10, 132, 255, 0.2);
+      background: rgba(10, 132, 255, 0.12);
+      color: #b7dbff;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .dom-page pre {
+      margin: 0;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: #0f1116;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+      max-height: none;
+      scrollbar-width: none;
+    }
+
+    .dom-page pre::-webkit-scrollbar {
+      display: none;
+    }
+
+    .dom-page pre code {
+      display: block;
+      color: #d7e3ff;
+      font-size: 12px;
+      line-height: 1.5;
+      white-space: pre;
+      word-break: break-word;
+      font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+
+    .dom-page .info-card p,
+    .dom-page .info-card li {
+      margin: 0;
+      color: var(--label-secondary);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .dom-page .info-card ul {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .debug-page .content-grid {
+      grid-template-columns: minmax(0, 1.04fr) minmax(320px, 0.96fr);
+      align-items: stretch;
+    }
+
+    .debug-page .stack {
+      display: grid;
+      gap: 12px;
+      min-height: 0;
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+    }
+
+    .debug-page .info-card,
+    .debug-page .focus-card {
+      display: grid;
+      gap: 12px;
+      padding: 20px;
+      border-radius: 24px;
+      border: 1px solid var(--separator);
+      background: linear-gradient(180deg, rgba(28, 28, 30, 0.92), rgba(28, 28, 30, 0.78));
+      box-shadow: var(--shadow-sm);
+      min-height: 0;
+      height: 100%;
+      align-content: start;
+    }
+
+    .debug-page .info-card h3,
+    .debug-page .focus-card h3 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.35;
+      color: var(--label-primary);
+    }
+
+    .debug-page .info-card p,
+    .debug-page .info-card li,
+    .debug-page .focus-card p {
+      margin: 0;
+      color: var(--label-secondary);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .debug-page .info-card ul {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .js-topic-page .code-card,
+    .js-topic-page .info-card,
+    .spec-page .info-card,
+    .spec-page .image-card,
+    .spec-page .code-card {
+      display: grid;
+      gap: 12px;
+      padding: 20px;
+      border-radius: 24px;
+      border: 1px solid var(--separator);
+      background: linear-gradient(180deg, rgba(28, 28, 30, 0.92), rgba(28, 28, 30, 0.78));
+      box-shadow: var(--shadow-sm);
+      min-height: 0;
+    }
+
+    .js-topic-page .code-head,
+    .spec-page .code-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .js-topic-page .code-title,
+    .js-topic-page .info-card h3,
+    .spec-page .code-title,
+    .spec-page .info-card h3,
+    .spec-page .image-card h3 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.35;
+      color: var(--label-primary);
+    }
+
+    .js-topic-page .code-lang,
+    .spec-page .code-lang {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(10, 132, 255, 0.2);
+      background: rgba(10, 132, 255, 0.12);
+      color: #b7dbff;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .js-topic-page pre,
+    .spec-page pre {
+      margin: 0;
+      padding: 16px 18px;
+      border-radius: 20px;
+      background: #0f1116;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      overflow: auto;
+      scrollbar-gutter: stable;
+    }
+
+    .js-topic-page pre {
+      max-height: clamp(220px, 28vh, 300px);
+    }
+
+    .spec-page pre {
+      max-height: clamp(240px, 32vh, 340px);
+    }
+
+    .js-topic-page pre code,
+    .spec-page pre code {
+      display: block;
+      color: #d7e3ff;
+      font-size: 13px;
+      line-height: 1.7;
+      white-space: pre;
+      word-break: break-word;
+      font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+
+    .js-topic-page .info-card p,
+    .js-topic-page .info-card li,
+    .spec-page .info-card p,
+    .spec-page .info-card li {
+      margin: 0;
+      color: var(--label-secondary);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .js-topic-page .info-card ul,
+    .spec-page .info-card ul {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .js-topic-page .demo-link,
+    .spec-page .demo-link {
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(10, 132, 255, 0.16);
+      background: rgba(10, 132, 255, 0.08);
+      color: #dfeeff;
+      text-decoration: none;
+      overflow-wrap: anywhere;
+    }
+
+    .js-topic-page .stack {
+      display: grid;
+      gap: 12px;
+      min-height: 0;
+    }
+
+    .js-topic-page .pill-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .js-topic-page .pill-box {
+      padding: 16px 18px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.04);
+      display: grid;
+      gap: 6px;
+    }
+
+    .js-topic-page .pill-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .js-topic-page .pill-copy {
+      color: var(--label-secondary);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .spec-page .image-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .spec-page .image-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .spec-page .image-card:first-child {
+      grid-column: 1 / -1;
+    }
+
+    .spec-page .image-card img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.04);
+      cursor: zoom-in;
+    }
+
+    .image-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(12px);
+    }
+
+    .image-modal.open {
+      display: flex;
+    }
+
+    .image-modal__panel {
+      position: relative;
+      max-width: min(92vw, 1280px);
+      max-height: 88vh;
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(20, 20, 20, 0.92);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+    }
+
+    .image-modal__img {
+      display: block;
+      max-width: 100%;
+      max-height: 78vh;
+      object-fit: contain;
+      border-radius: 18px;
+    }
+
+    .image-modal__close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .checklist {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .check {
+      display: grid;
+      grid-template-columns: 26px 1fr;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .check-mark {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--theme-primary);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      margin-top: 2px;
+    }
+
+    .check-text {
+      color: var(--label-primary);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    .notes {
+      display: grid;
+      gap: 12px;
+      min-height: 0;
+    }
+
+    .note-card {
+      padding: 20px;
+      display: grid;
+      gap: 12px;
+      background: linear-gradient(180deg, rgba(28, 28, 30, 0.9), rgba(28, 28, 30, 0.76));
+    }
+
+    .note-card p,
+    .note-card li {
+      margin: 0;
+      color: var(--label-secondary);
+      line-height: 1.75;
+      font-size: 14px;
+    }
+
+    .note-card ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .bottom-note {
+      padding: 18px 20px;
+      border-radius: 18px;
+      border: 1px solid rgba(10, 132, 255, 0.18);
+      background: rgba(10, 132, 255, 0.08);
+      color: var(--label-secondary);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .footbar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 20;
+      padding: 0 20px 16px;
+      pointer-events: none;
+    }
+
+    .footbar-inner {
+      width: min(1280px, calc(100vw - 40px));
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      gap: 14px;
+      align-items: center;
+      pointer-events: auto;
+    }
+
+    .hint {
+      color: var(--label-tertiary);
+      font-size: 12px;
+      line-height: 1.5;
+      padding-left: 4px;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .progress {
+      height: 6px;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--separator);
+      background: rgba(255, 255, 255, 0.06);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .progress span {
+      display: block;
+      width: 50%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, rgba(10, 132, 255, 0.8), rgba(48, 209, 88, 0.8));
+      transition: width 0.32s ease;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      height: 44px;
+      min-width: 44px;
+      padding: 0 14px;
+      border-radius: 14px;
+      border: 1px solid var(--separator);
+      background: rgba(28, 28, 30, 0.84);
+      color: var(--label-primary);
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+    }
+
+    .btn:hover,
+    .btn:focus-visible {
+      transform: translateY(-1px);
+      outline: none;
+      background: rgba(40, 40, 42, 0.92);
+      border-color: rgba(10, 132, 255, 0.28);
+    }
+
+    .btn.primary {
+      background: rgba(10, 132, 255, 0.16);
+      border-color: rgba(10, 132, 255, 0.18);
+      color: #8cc8ff;
+    }
+
+    .dots {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding: 0 6px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border: none;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.22);
+      cursor: pointer;
+      padding: 0;
+      transition: width 0.22s ease, background 0.22s ease, transform 0.22s ease;
+    }
+
+    .dot.active {
+      width: 34px;
+      background: var(--theme-primary);
+    }
+
+    .dot:hover,
+    .dot:focus-visible {
+      transform: translateY(-1px);
+      outline: none;
+      background: rgba(10, 132, 255, 0.7);
+    }
+
+    @media (max-width: 1080px) {
+      .slide-shell {
+        width: min(100vw - 24px, calc((100vh - 128px) * 16 / 9));
+      }
+
+      .cover-grid,
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .meta-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .slide {
+        align-items: center;
+        overflow: hidden;
+        padding: 12px 12px 112px;
+      }
+
+      .slide-frame {
+        padding: 22px 20px 24px;
+        gap: 16px;
+      }
+
+      .slide-shell {
+        width: calc(100vw - 24px);
+        height: calc(100vh - 128px);
+        max-height: calc(100vh - 128px);
+        border-radius: 26px;
+        aspect-ratio: auto;
+      }
+
+      .slide-top {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .slide-counter {
+        align-self: flex-start;
+      }
+
+      .card,
+      .script,
+      .part-card,
+      .note-card,
+      .focus-card {
+        border-radius: 20px;
+      }
+
+      .footbar {
+        padding: 0 10px 10px;
+      }
+
+      .footbar-inner {
+        width: calc(100vw - 20px);
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .hint {
+        display: none;
+      }
+
+      .controls {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .slide,
+      .progress span,
+      .dot,
+      .btn {
+        transition: none;
+      }
+    }
+
+    @media print {
+      body {
+        overflow: visible;
+        background: #fff;
+      }
+
+      body::before,
+      body::after,
+      .footbar {
+        display: none;
+      }
+
+      .slide {
+        position: relative;
+        opacity: 1 !important;
+        pointer-events: auto;
+        transform: none !important;
+        page-break-after: always;
+        padding: 0;
+      }
+
+      .slide-shell {
+        width: 100%;
+        max-height: none;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck" id="deck">
+    <div class="slides">
+      <section class="slide active" data-title="封面" aria-label="封面">
+        <article class="slide-shell">
+          <div class="slide-frame">
+            <header class="slide-top">
+              <div>
+                <div class="eyebrow">Front-End Training</div>
+                <h1 class="slide-title">前端基础技术</h1>
+                <p class="slide-subtitle">主题介绍 · 从页面结构到交互开发</p>
+              </div>
+              <div class="slide-counter"><strong>01</strong><span>/ 21</span></div>
+            </header>
+
+            <div class="cover-grid">
+              
+              <aside class="card" aria-label="课程要点">
+                <div class="vision-label">课程要点</div>
+                <h2 class="card-title">基础认知 · HTML · CSS · JavaScript</h2>
+                <p class="card-subtitle">先建立整体认知，再进入具体知识点，适合课堂投屏和逐页讲解。</p>
+                <div class="pills">
+                  <span class="pill blue">基础认知</span>
+                  <span class="pill green">HTML</span>
+                  <span class="pill red">CSS / JS</span>
+                </div>
+                <div class="meta-grid">
+                  <div class="meta">
+                    <span class="meta-label">课程主题</span>
+                    <span class="meta-value">前端基础技术</span>
+                  </div>
+                  <div class="meta">
+                    <span class="meta-label">学习路径</span>
+                    <span class="meta-value">从结构到交互</span>
+                  </div>
+                  <div class="meta">
+                    <span class="meta-label">适用对象</span>
+                    <span class="meta-value">前端入门学员</span>
+                  </div>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="slide" data-title="目录" aria-label="课程目录">
+        <article class="slide-shell">
+          <div class="slide-frame">
+            <header class="slide-top">
+              <div>
+                <div class="eyebrow">Course Outline</div>
+                <h2 class="slide-title" style="font-size: clamp(32px, 4.4vw, 60px);">课程目录</h2>
+                <p class="slide-subtitle">先建立基础学习路径，再进入前端基础技术（基础入门）。</p>
+              </div>
+              <div class="slide-counter"><strong>02</strong><span>/ 21</span></div>
+            </header>
+
+            <div class="content-grid">
+              <div class="part-list" aria-label="目录结构">
+                <article class="part-card">
+                  <div class="part-tag">Part 01</div>
+                  <h3>第一部分：基础学习路径</h3>
+                  <p>基础认知 + 前端 + 后端 + 数据库</p>
+                  <div class="checklist">
+                    <div class="check">
+                      <div class="check-mark">1</div>
+                      <div class="check-text">先认识 Web 应用的基本链路，理解前端、后端、数据库和 API 的关系。</div>
+                    </div>
+                    <div class="check">
+                      <div class="check-mark">2</div>
+                      <div class="check-text">这一部分帮助大家建立基础认知，为后面的前端学习打底。</div>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="part-card alt">
+                  <div class="part-tag">Part 02</div>
+                  <h3>第二部分：前端基础技术（基础入门）</h3>
+                  <p>HTML + CSS + JS</p>
+                  <div class="checklist">
+                    <div class="check">
+                      <div class="check-mark">1</div>
+                      <div class="check-text">按“结构、样式、交互”的顺序学习，逐步认识前端基础。</div>
+                    </div>
+                    <div class="check">
+                      <div class="check-mark">2</div>
+                      <div class="check-text">再进入具体语法和规范，把知识点串成可以实践的基础能力。</div>
+                    </div>
+                  </div>
+                </article>
+              </div>
+
+              <div class="notes" id="notes">
+                <div class="note-card">
+                  <div class="note-label">学习要点</div>
+                  <p>这门课围绕“前端基础技术”展开，先看整体路径，再进入具体知识点。</p>
+                </div>
+
+                <div class="note-card">
+                  <div class="note-label">课堂顺序</div>
+                  <p>先理解前端、后端、数据库和 API 的关系，再学习 HTML、CSS 和 JavaScript。</p>
+                </div>
+
+                <div class="note-card">
+                  <div class="note-label">目标结果</div>
+                  <ul>
+                    <li>知道整门课学什么。</li>
+                    <li>知道每一部分的重点。</li>
+                    <li>建立清晰的入门路径。</li>
+                  </ul>
+                </div>
+
+                <div class="bottom-note">
+                  这一页帮助大家先建立课程地图，再进入后面的具体知识点。
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="slide login-flow-page" data-title="基础认知" aria-label="基础认知">
+        <article class="slide-shell">
+          <div class="slide-frame">
+            <header class="slide-top">
+              <div>
+                <div class="eyebrow">基础认知</div>
+                <h2 class="slide-title" style="font-size: clamp(36px, 4.6vw, 66px);">基础认知</h2>
+                <p class="slide-subtitle">通过“用户登录一个网站”的场景，理解前端、API、后端和数据库如何配合工作。</p>
+              </div>
+              <div class="slide-counter"><strong>03</strong><span>/ 21</span></div>
+            </header>
+
+            <div class="content-grid">
+              <div class="part-list" aria-label="登录场景步骤">
+                <article class="part-card">
+                  <div class="part-tag">场景</div>
+                  <h3>用户登录一个网站</h3>
+                  <p>把一次登录操作拆成前端、API、后端和数据库四个环节来理解。</p>
+                  <div class="checklist">
+                    <div class="check">
+                      <div class="check-mark">1</div>
+                      <div class="check-text">在前端页面输入账号密码，点击【登录】。</div>
+                    </div>
+                    <div class="check">
+                      <div class="check-mark">2</div>
+                      <div class="check-text">前端把账号密码打包成一个请求，通过 API 发送给后端。</div>
+                    </div>
+                    <div class="check">
+                      <div class="check-mark">3</div>
+                      <div class="check-text">后端收到请求后，去数据库里查账号和密码是否正确。</div>
+                    </div>
+                    <div class="check">
+                      <div class="check-mark">4</div>
+                      <div class="check-text">数据库把查询结果返回给后端，后端开始判断结果。</div>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="part-card alt">
+                  <div class="part-tag">流程</div>
+                  <h3>整条链路怎么走</h3>
+                  <p>前端发问 → API传话 → 后端处理 → 数据库存取 → 原路返回 → 前端显示</p>
+                  <div class="checklist">
+                    <div class="check">
+                      <div class="check-mark">5</div>
+                      <div class="check-text">如果账号密码正确，就返回登录成功。</div>
+                    </div>
+                    <div class="check">
+                      <div class="check-mark">6</div>
+                      <div class="check-text">如果账号密码错误，就返回密码错误。</div>
+                    </div>
+                    <div class="check">
+                      <div class="check-mark">7</div>
+                      <div class="check-text">前端收到结果后，提示登录成功或请重试。</div>
+                    </div>
+                  </div>
+                </article>
+              </div>
+
+              <div class="notes">
+                <div class="note-card">
+                  <div class="note-label">四个角色</div>
+                  <ul>
+                    <li>前端：展示界面，接收输入。</li>
+                    <li>API：约定好的通道，负责传递请求和响应。</li>
+                    <li>后端：处理业务逻辑，做判断。</li>
+                    <li>数据库：存放和查询数据。</li>
+                  </ul>
+                </div>
+
+                <div class="note-card">
+                  <div class="note-label">学习顺序</div>
+                  <p>先看清每个角色做什么，再把它们连成一条完整的登录流程。</p>
+                </div>
+
+                <div class="focus-card">
+                  <div class="vision-label">记住一句话</div>
+                  <h3 class="focus-title">前端负责展示和交互，API 负责传递，后端负责处理，数据库负责存取。</h3>
+                  <p class="focus-copy">把这个链路记住，后面学习接口、请求和响应会更容易理解。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="slide qa-page" data-title="基础认知问答" aria-label="基础认知问答">
+        <article class="slide-shell">
+          <div class="slide-frame">
+            <header class="slide-top">
+              <div>
+                <div class="eyebrow">基础认知</div>
+                <h2 class="slide-title" style="font-size: clamp(34px, 4.4vw, 60px);">问答</h2>
+              </div>
+              <div class="slide-counter"><strong>04</strong><span>/ 21</span></div>
+            </header>
+
+            <div class="content-grid">
+              <div class="part-list" aria-label="基础认知问答">
+                <article class="part-card">
+                  <div class="part-tag">问题 1</div>
+                  <h3 class="question-title">我想改网站上的“联系邮箱”，改完一次，希望下次打开还是新的邮箱。这涉及到哪几个？</h3>
+                  <div class="question-options">
+                    <div class="question-option">A. 只改前端</div>
+                    <div class="question-option">B. 只改数据库</div>
+                    <div class="question-option">C. 前端 + 后端 + 数据库 + API</div>
+                  </div>
+                  <div class="question-hint">（前端提供输入框 → API传 → 后端收到 → 存到数据库）</div>
+                </article>
+
+                <article class="part-card alt">
+                  <div class="part-tag">问题 2</div>
+                  <h3 class="question-title">网页显示很慢，老板说“换更好的电脑”。换哪部分对速度提升最直接？（选择题）</h3>
+                  <div class="question-options">
+                    <div class="question-option">A. 换用户的显示器（前端设备）</div>
+                    <div class="question-option">B. 换数据库服务器</div>
+                  </div>
+                  <div class="question-hint">（大多数慢是查询数据库慢）</div>
+                </article>
+
+                <article class="part-card">
+                  <div class="part-tag">问题 3</div>
+                  <h3 class="question-title">以下哪个不需要数据库？</h3>
+                  <div class="question-options">
+                    <div class="question-option">A. 计算器 APP（输入数字，输出结果）</div>
+                    <div class="question-option">B. 记账本 APP（记录每一笔，下次打开还在）</div>
+                    <div class="question-option">C. 公司员工名单系统（可搜索姓名）</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="slide foundation-page" data-title="前端基础技术" aria-label="前端基础技术">
+        <article class="slide-shell">
+          <div class="slide-frame">
+            <header class="slide-top">
+              <div>
+                <div class="eyebrow">第二部分</div>
+                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">前端基础技术（基础入门）</h2>
+              </div>
+              <div class="slide-counter"><strong>05</strong><span>/ 21</span></div>
+            </header>
+
+            <div class="content-grid">
+              <div class="part-list" aria-label="前端基础技术介绍">
+                <div class="intro-panel">
+                  <p>前端技术核心是“构建用户可交互的界面”，底层依赖HTML、CSS、JavaScript三大基础技术，其中div、布局、组件、CSS均属于前端基础核心内容，从底层结构到样式呈现，逐步拆解讲解。</p>
+                </div>
+
+                <article class="part-card">
+                  <div class="part-tag">一、前端基础组件介绍</div>
+                  <h3>组件底层定义</h3>
+                  <p>前端组件是“HTML结构+CSS样式+JavaScript交互”的组合体，底层逻辑是“封装可复用的界面单元”，将重复出现的界面模块（如tab切换、按钮、弹窗）封装成组件，可多次复用，减少重复开发，提升开发效率。</p>
+                </article>
+              </div>
+
+              <div class="notes">
+                <div class="note-card">
+                  <h3>HTML 是骨架</h3>
+                  <ul>
+                    <li>负责<strong>页面有什么</strong>：标题、按钮、文字区域</li>
+                    <li><code>div</code> = 盒子，用来装内容</li>
+                    <li><code>id</code> 给元素起名字，方便 JS/CSS 找到它</li>
+                  </ul>
+                </div>
+
+                <div class="note-card">
+                  <h3>CSS 是外观</h3>
+                  <ul>
+                    <li>负责<strong>长什么样</strong>：大小、颜色、边框、居中、隐藏</li>
+                    <li><code>#title</code> → 找 id 为 title 的元素</li>
+                    <li><code>.box</code> → 找 class 为 box 的元素</li>
+                    <li><code>display: none</code> → 隐藏元素</li>
+                  </ul>
+                </div>
+
+                <div class="note-card">
+                  <h3>JS 是行为</h3>
+                  <ul>
+                    <li>负责<strong>做什么</strong>：点击、变色、显示隐藏</li>
+                    <li><code>document.getElementById()</code> → 找到元素</li>
+                    <li><code>onclick</code> → 点击触发函数</li>
+                    <li><code>if/else</code> → 判断逻辑</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="slide html-page" data-title="HTML核心元素" aria-label="HTML核心元素">
+        <article class="slide-shell">
+          <div class="slide-frame">
+            <header class="slide-top">
+              <div>
+                <div class="eyebrow">第二部分</div>
+                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">HTML核心元素（div及基础结构）</h2>
+              </div>
+              <div class="slide-counter"><strong>06</strong><span>/ 21</span></div>
+            </header>
+
+            <div class="content-grid">
+              <div class="part-list" aria-label="HTML核心元素内容">
+                <div class="intro-panel">
+                  <p>HTML（超文本标记语言）是前端界面的“骨架”，负责定义界面的结构和内容，所有前端可视元素都依赖HTML标签搭建，无需编译，直接由浏览器解析渲染。底层逻辑：通过标签（标记）告知浏览器“某块区域是什么内容、是什么类型”，是前端技术的基础载体。</p>
+                </div>
+
+                <div class="code-card" aria-label="HTML示例代码">
+                  <div class="code-head">
+                    <h3 class="code-title">HTML 示例代码</h3>
+                    <div class="code-lang">HTML</div>
+                  </div>
+                  <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-CN"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;前端基础教学案例&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;!--主体内容--&gt;
+&lt;div class="box"&gt;
+    &lt;h2 id="title"&gt;我是标题&lt;/h2&gt;
+    &lt;button onclick="changeColor()"&gt;点击变色&lt;/button&gt;
+    &lt;button onclick="toggleShow()"&gt;显示/隐藏内容&lt;/button&gt;
+    &lt;div id="content"&gt;我是被显示隐藏的内容！&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                </div>
+
+                
+              </div>
+
+              <div class="notes">
+
+                <div class="section-block">
+                  <h3>div标签（前端布局核心元素）</h3>
+                  <p>div是HTML中最基础、最常用的“块级元素”，底层作用是“划分界面区域、承载其他元素”，是前端布局的核心基石，无默认样式（默认占满一行，无边框、无内边距），需配合CSS设置样式和布局。</p>
+                </div>
+
+                <div class="section-block">
+                  <h3>核心特性</h3>
+                  <ul>
+                    <li>块级元素：默认独占一行，宽度默认等于父容器宽度，高度由内部内容决定；</li>
+                    <li>可嵌套性：可嵌套其他所有HTML元素（包括div、文本、图片、按钮等），实现复杂界面的区域划分；</li>
+                    <li>无默认样式：本身不具备任何视觉效果，需通过CSS设置宽高、边框、背景、边距等样式，才能呈现可视效果；</li>
+                    <li>可通过id、class属性标识，方便CSS定位样式、JavaScript操作元素。</li>
+                  </ul>
+                </div>
+
+                <div class="section-block">
+                  <h3>底层应用场景</h3>
+                  <p>所有前端界面的区域划分（如顶部导航区、左侧菜单区、中间内容区、底部版权区），均通过div搭建基础结构，再配合其他标签完善内容。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="slide html-page tags-page" data-title="其他标签" aria-label="其他标签">
+        <article class="slide-shell">
+          <div class="slide-frame">
+            <header class="slide-top">
+              <div>
+                <div class="eyebrow">第二部分</div>
+                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">其他：p、span、img、strong</h2>
+              </div>
+              <div class="slide-counter"><strong>07</strong><span>/ 21</span></div>
+            </header>
+
+            <div class="content-grid">
+              <div class="code-card" aria-label="其他标签示例代码">
+                <div class="code-head">
+                  <h3 class="code-title">代码区</h3>
+                  <div class="code-lang">Plain Text</div>
+                </div>
+                <pre><code>&lt;p&gt;&lt;/p&gt;
+&lt;div&gt;&lt;/div&gt;
+&lt;span&gt;&lt;/span&gt;
+&lt;img src="http://img.yaotia.com/tiku/2026-05/19/b9e02.png" width="300"&gt;
+&lt;strong&gt;加粗这句内容&lt;/strong&gt;
+                </code></pre>
+              </div>
+
+              <div class="markdown-card" aria-label="标签说明">
+                
+                <div class="markdown-block">
+                  <h4>div：块级大盒子</h4>
+                  <p>独占一整行，用来<strong>划分大区域</strong>，可以放任何内容：文字、图片、按钮、其他 div。</p>
+                </div>
+
+                <div class="markdown-block">
+                  <h4>p：段落标签</h4>
+                  <p>专门放正文文字，自带上下间距，<strong>独占一行</strong>，自动区分段落。</p>
+                </div>
+
+                <div class="markdown-block">
+                  <h4>span：行内小盒子</h4>
+                  <p>不换行，只用来<strong>修改一小段文字样式</strong>，可以同一行里单独改几个字的颜色、大小、加粗。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="slide tab-page" data-title="tab组件" aria-label="tab组件">
+        <article class="slide-shell">
+          <div class="slide-frame">
+            <header class="slide-top">
+              <div>
+                <div class="eyebrow">第二部分</div>
+                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">案例：tab组件（基础交互组件）</h2>
+              </div>
+              <div class="slide-counter"><strong>08</strong><span>/ 21</span></div>
+            </header>
+
+            <div class="content-grid">
+              <div class="info-card">
+                <h3>tab 组件核心功能</h3>
+                <p>tab组件核心功能是“切换显示不同内容”，底层由3部分组成，无复杂逻辑，是入门级核心组件。</p>
+
+                <div class="pill-grid">
+                  <div class="pill-box">
+                    <div class="pill-title">HTML结构</div>
+                    <div class="pill-copy">用div搭建tab导航区（多个tab选项）和tab内容区（多个内容面板），每个tab选项对应一个内容面板，通过id或class关联。</div>
+                  </div>
+
+                  <div class="pill-box">
+                    <div class="pill-title">CSS样式</div>
+                    <div class="pill-copy">设置tab导航的默认样式、选中样式（如选中时字体加粗、添加下划线），隐藏未选中的内容面板（display: none）。</div>
+                  </div>
+
+                  <div class="pill-box">
+                    <div class="pill-title">JavaScript交互</div>
+                    <div class="pill-copy">给每个tab选项绑定点击事件，点击时，切换tab选中样式，显示对应的内容面板，隐藏其他内容面板，实现“点击切换”的核心功能。</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flow-card">
+                <h3>补充说明</h3>
+                <p>其他基础组件（按钮、输入框、弹窗）的底层逻辑与tab组件一致，均是“结构+样式+简单交互”的组合，核心是“复用性”。</p>
+                <a class="demo-link" href="https://www.antdv.com/components/overview-cn" target="_blank" rel="noopener noreferrer">前端组件：https://www.antdv.com/components/overview-cn</a>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="slide form-page" data-title="表单" aria-label="表单">
+        <article class="slide-shell">
+          <div class="slide-frame">
+            <header class="slide-top">
+              <div>
+                <div class="eyebrow">第二部分</div>
+                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">表单</h2>
+              </div>
+              <div class="slide-counter"><strong>09</strong><span>/ 21</span></div>
+            </header>
+
+            <div class="content-grid">
+              <div class="code-card" aria-label="表单示例代码">
+                <div class="code-head">
+                  <h3 class="code-title">HTML 表单示例</h3>
+                  <div class="code-lang">HTML</div>
+                </div>
+                <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-CN"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;用户信息注册表单示例&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .form-container {
+            background: white;
+            max-width: 600px;
+            width: 100%;
+            padding: 2rem;
+            border-radius: 24px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-top: 0;
+            color: #1e293b;
+            border-left: 5px solid #3b82f6;
+            padding-left: 15px;
+        }
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #0f172a;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: 0.2s;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+        }
+        .radio-group, .checkbox-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .radio-group label, .checkbox-group label {
+            font-weight: normal;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        input[type="radio"], input[type="checkbox"] {
+            width: auto;
+            margin-right: 4px;
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+            width: 100%;
+        }
+        button:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+        small {
+            color: #64748b;
+            display: block;
+            margin-top: 4px;
+        }
+        hr {
+            margin: 20px 0;
+        }
+        fieldset {
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 1.5rem;
+        }
+        legend {
+            font-weight: bold;
+            padding: 0 10px;
+            color: #1e293b;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="form-container"&gt;
+    &lt;h2&gt;📝 用户注册 / 提交表单&lt;/h2&gt;
+    &lt;form action="https://httpbin.org/post" method="post" onsubmit="alert('演示提交：表单数据已捕获，查看控制台'); return true;"&gt;
+        &lt;!-- 文本输入 + 必填 --&gt;
+        &lt;div class="form-group"&gt;
+            &lt;label for="username"&gt;👤 用户名 &lt;span style="color:red;"&gt;*&lt;/span&gt;&lt;/label&gt;
+            &lt;input type="text" id="username" name="username" placeholder="例如: 张三" required&gt;
+            &lt;small&gt;必填，请填写真实姓名或昵称&lt;/small&gt;
+        &lt;/div&gt;
+
+        &lt;!-- 邮箱 (H5类型) --&gt;
+        &lt;div class="form-group"&gt;
+            &lt;label for="email"&gt;📧 电子邮箱 &lt;span style="color:red;"&gt;*&lt;/span&gt;&lt;/label&gt;
+            &lt;input type="email" id="email" name="email" placeholder="your@example.com" required&gt;
+        &lt;/div&gt;
+
+        &lt;!-- 密码 --&gt;
+        &lt;div class="form-group"&gt;
+            &lt;label for="pwd"&gt;🔒 密码&lt;/label&gt;
+            &lt;input type="password" id="pwd" name="password" placeholder="至少6位"&gt;
+        &lt;/div&gt;
+
+        &lt;!-- 数字 input --&gt;
+        &lt;div class="form-group"&gt;
+            &lt;label for="age"&gt;🎂 年龄&lt;/label&gt;
+            &lt;input type="number" id="age" name="age" min="1" max="120" placeholder="18"&gt;
+        &lt;/div&gt;
+
+        &lt;!-- 单选 (radio) 使用 fieldset + legend 分组 --&gt;
+        &lt;fieldset&gt;
+            &lt;legend&gt;性别&lt;/legend&gt;
+            &lt;div class="radio-group"&gt;
+                &lt;label&gt;&lt;input type="radio" name="gender" value="男"&gt; 男&lt;/label&gt;
+                &lt;label&gt;&lt;input type="radio" name="gender" value="女"&gt; 女&lt;/label&gt;
+                &lt;label&gt;&lt;input type="radio" name="gender" value="不愿透露" checked&gt; 不愿透露&lt;/label&gt;
+            &lt;/div&gt;
+        &lt;/fieldset&gt;
+
+        &lt;!-- 下拉选择 select + optgroup --&gt;
+        &lt;div class="form-group"&gt;
+            &lt;label for="city"&gt;🌆 所在城市&lt;/label&gt;
+            &lt;select id="city" name="city"&gt;
+                &lt;option value=""&gt;-- 请选择 --&lt;/option&gt;
+                &lt;optgroup label="一线城市"&gt;
+                    &lt;option value="北京"&gt;北京&lt;/option&gt;
+                    &lt;option value="上海"&gt;上海&lt;/option&gt;
+                    &lt;option value="广州"&gt;广州&lt;/option&gt;
+                    &lt;option value="深圳"&gt;深圳&lt;/option&gt;
+                &lt;/optgroup&gt;
+                &lt;optgroup label="其他城市"&gt;
+                    &lt;option value="成都"&gt;成都&lt;/option&gt;
+                    &lt;option value="杭州"&gt;杭州&lt;/option&gt;
+                &lt;/optgroup&gt;
+            &lt;/select&gt;
+        &lt;/div&gt;
+
+        &lt;!-- 复选框组 (多选) --&gt;
+        &lt;div class="form-group"&gt;
+            &lt;label&gt;💡 兴趣领域 (可多选)&lt;/label&gt;
+            &lt;div class="checkbox-group"&gt;
+                &lt;label&gt;&lt;input type="checkbox" name="interest" value="编程"&gt; 编程&lt;/label&gt;
+                &lt;label&gt;&lt;input type="checkbox" name="interest" value="设计"&gt; 设计&lt;/label&gt;
+                &lt;label&gt;&lt;input type="checkbox" name="interest" value="摄影"&gt; 摄影&lt;/label&gt;
+                &lt;label&gt;&lt;input type="checkbox" name="interest" value="音乐"&gt; 音乐&lt;/label&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;!-- 文本域 textarea --&gt;
+        &lt;div class="form-group"&gt;
+            &lt;label for="bio"&gt;📝 个人简介&lt;/label&gt;
+            &lt;textarea id="bio" name="bio" rows="3" placeholder="简单介绍一下自己..."&gt;&lt;/textarea&gt;
+        &lt;/div&gt;
+
+        &lt;!-- 文件上传 --&gt;
+        &lt;div class="form-group"&gt;
+            &lt;label for="avatar"&gt;🖼️ 上传头像&lt;/label&gt;
+            &lt;input type="file" id="avatar" name="avatar" accept="image/*"&gt;
+            &lt;small&gt;支持jpg/png，不超过2MB（演示仅前端）&lt;/small&gt;
+        &lt;/div&gt;
+
+        &lt;!-- 范围选择 + 输出 --&gt;
+        &lt;div class="form-group"&gt;
+            &lt;label for="rangeVal"&gt;📊 熟练度 (1-10)&lt;/label&gt;
+            &lt;input type="range" id="rangeVal" name="level" min="1" max="10" value="5" oninput="outputVal.value = this.value"&gt;
+            &lt;output id="outputVal" name="rangeOutput"&gt;5&lt;/output&gt;
+        &lt;/div&gt;
+
+        &lt;hr&gt;
+
+        &lt;!-- datalist 提供建议列表 --&gt;
+        &lt;div class="form-group"&gt;
+            &lt;label for="browser"&gt;🔍 常用浏览器 (带输入建议)&lt;/label&gt;
+            &lt;input list="browsers" id="browser" name="browser" placeholder="输入或选择"&gt;
+            &lt;datalist id="browsers"&gt;
+                &lt;option value="Chrome"&gt;
+                &lt;option value="Edge"&gt;
+                &lt;option value="Firefox"&gt;
+                &lt;option value="Safari"&gt;
+            &lt;/datalist&gt;
+        &lt;/div&gt;
+
+        &lt;!-- 按钮组 --&gt;
+        &lt;div style="display: flex; gap: 12px; margin-top: 20px;"&gt;
+            &lt;button type="submit"&gt;✅ 提交表单&lt;/button&gt;
+            &lt;button type="reset" style="background: #94a3b8;"&gt;🗑️ 重置&lt;/button&gt;
+        &lt;/div&gt;
+
+        &lt;p style="font-size: 12px; color: gray; margin-top: 20px; text-align: center;"&gt;
+            ※ 提交后会跳转到 httpbin.org 显示收到的表单数据（仅演示请求）
+        &lt;/p&gt;
+    &lt;/form&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+演示地址：&lt;http://sadepot-api-tiku.buzhi.com/test/form1.html&gt;</code></pre>
+              </div>
+
+              <div class="info-card" aria-label="表单说明">
+                <h3>表单页说明</h3>
+                <p>这一页展示 HTML 表单的完整结构，包含文本输入、邮箱、密码、数字、单选、下拉、复选、文本域、文件上传、范围选择和建议列表。</p>
+                <ul>
+                  <li>代码区已设置固定高度，内容可在框内滚动。</li>
+                  <li>示例保留原始表单结构与演示地址。</li>
+                  <li>适合课堂上边看代码边解释每个表单控件的作用。</li>
+                </ul>
+                <a class="demo-link" href="http://sadepot-api-tiku.buzhi.com/test/form1.html" target="_blank" rel="noopener noreferrer">演示地址：http://sadepot-api-tiku.buzhi.com/test/form1.html</a>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="slide css-page" data-title="CSS基础" aria-label="CSS基础">
+        <article class="slide-shell">
+          <div class="slide-frame">
+            <header class="slide-top">
+              <div>
+                <div class="eyebrow">第三部分</div>
+                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">前端样式基础：CSS</h2>
+              </div>
+              <div class="slide-counter"><strong>10</strong><span>/ 21</span></div>
+            </header>
+
+            <div class="content-grid">
+              <div class="code-card" aria-label="CSS 代码示例">
+                <div class="code-head">
+                  <h3 class="code-title">CSS 核心基础</h3>
+                  <div class="code-lang">Plain Text</div>
+                </div>
+                <pre><code>.pad {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+  .pad-1 {
+    margin: 10px 20px 10px 20px;
+  }
+  .pad-2 {
+    width: 100px;
+    height: 100px;
+    color: red;
+    font-size: 14px;
+    margin: 10px 20px;
+  }
+  </code></pre>
+              </div>
+
+              <div class="notes">
+                <div class="info-card">
+                  <h3>1. CSS底层定位</h3>
+                  <p>CSS（层叠样式表）是前端界面的“皮肤”，底层作用是“美化HTML结构”，控制元素的视觉效果（颜色、大小、边框、间距、字体等），与HTML分离，实现“结构与样式分离”，便于维护和修改。</p>
+                  <p>底层逻辑：浏览器解析HTML后，再解析CSS，将CSS样式应用到对应的HTML元素上，呈现最终的可视界面，CSS的“层叠性”（优先级）决定了多个样式冲突时，哪个样式会生效。</p>
+                </div>
+
+                <div class="info-card">
+                  <h3>2. CSS核心基础</h3>
+                  <ul>
+                    <li>选择器：用于定位需要设置样式的HTML元素，是CSS作用于元素的“桥梁”，核心常用选择器：id选择器（#id）、class选择器（.class）、元素选择器（div、p等）、后代选择器（div p）；</li>
+                    <li>核心样式属性：宽高（width、height）、边框（border）、边距（margin、padding）、背景（background）、字体（font-size、font-family）、颜色（color）、定位（position、float）、弹性布局（display: flex）；</li>
+                    <li>层叠性：当多个CSS样式作用于同一个元素时，按“优先级”生效（id选择器 &gt; class选择器 &gt; 元素选择器），相同优先级时，后定义的样式覆盖先定义的样式；</li>
+                    <li>继承性：子元素会继承父元素的部分CSS样式（如字体、颜色），减少重复代码，底层目的是提高开发效率。</li>
+                  </ul>
+                </div>
+
+                <div class="figure-card">
+                  <h3>盒模型示意图</h3>
+                  <img src="image/6.png" alt="CSS盒模型示意图">
+                  <p class="figure-caption">对应 margin、border、padding、content 的层级关系。</p>
+                  <a class="demo-link" href="http://sadepot-api-tiku.buzhi.com/test/padding.html" target="_blank" rel="noopener noreferrer">案例地址：http://sadepot-api-tiku.buzhi.com/test/padding.html</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="slide js-page" data-title="JS基础知识" aria-label="JS基础知识">
+        <article class="slide-shell">
+          <div class="slide-frame">
+            <header class="slide-top">
+              <div>
+                <div class="eyebrow">第四部分</div>
+                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">JS基础知识</h2>
+              </div>
+              <div class="slide-counter"><strong>11</strong><span>/ 21</span></div>
+            </header>
+
+            <div class="content-grid">
+              <div class="info-card">
+                <h3>1. 基础认知</h3>
+                <div class="pill-grid">
+                  <div class="pill-box">
+                    <div class="pill-title">JS 是什么？</div>
+                    <div class="pill-copy">JavaScript（简称 JS）是运行在浏览器里的脚本语言，作用是让静态页面动起来，实现交互、判断、计算、数据处理。</div>
+                  </div>
+
+                  <div class="pill-box">
+                    <div class="pill-title">JS 在哪里写？</div>
+                    <div class="pill-copy">可以直接写在网页 `&lt;script&gt;` 标签里，也可以写在单独的 `.js` 文件中。</div>
+                  </div>
+
+                  <div class="pill-box">
+                    <div class="pill-title">JS 能做什么？</div>
+                    <div class="pill-copy">点击按钮弹出提示、获取用户输入内容、判断内容是否为空或格式是否正确、显示 / 隐藏内容、发送数据给后端、页面动态渲染数据。</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="focus-card">
+                <h3>一句话记忆</h3>
+                <p>JS 是前端页面的“动作控制器”。</p>
+                <a class="demo-link" href="http://sadepot-api-tiku.buzhi.com/test/html.html" target="_blank" rel="noopener noreferrer">参考案例：http://sadepot-api-tiku.buzhi.com/test/html.html</a>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="slide example-page" data-title="HTMLCSSJS案例" aria-label="HTMLCSSJS案例">
+        <article class="slide-shell">
+          <div class="slide-frame">
+            <header class="slide-top">
+              <div>
+                <div class="eyebrow">第四部分</div>
+                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">html+css+js案例</h2>
+              </div>
+              <div class="slide-counter"><strong>12</strong><span>/ 21</span></div>
+            </header>
+
+            <div class="content-grid">
+              <div class="code-card" aria-label="HTML CSS JS 示例代码">
+                <div class="code-head">
+                  <h3 class="code-title">前端基础教学案例</h3>
+                  <div class="code-lang">HTML</div>
+                </div>
+                <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-CN"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;前端基础教学案例&lt;/title&gt;
+    &lt;style&gt;
+        /* CSS 部分：给页面加样式 */
+        .box {
+            width: 300px;
+            padding: 20px;
+            border: 2px solid #333;
+            margin: 50px auto;
+            text-align: center;
+        }
+
+        #title {
+            font-size: 22px;
+            color: blue; /* 默认文字蓝色 */
+        }
+
+        button {
+            margin: 10px;
+            padding: 8px 16px;
+            cursor: pointer; /* 鼠标变成小手 */
+        }
+
+        #content {
+            margin-top: 15px;
+            display: none; /* 默认隐藏 */
+            color: green;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;!-- HTML 结构：页面骨架 --&gt;
+    &lt;div class="box"&gt;
+        &lt;h2 id="title"&gt;我是标题&lt;/h2&gt;
+        &lt;button onclick="changeColor()"&gt;点击变色&lt;/button&gt;
+        &lt;button onclick="toggleShow()"&gt;显示/隐藏内容&lt;/button&gt;
+        &lt;div id="content"&gt;我是被显示隐藏的内容！&lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+        // JS 部分：实现交互功能
+        // 1. 切换标题颜色
+        function changeColor() {
+            let title = document.getElementById("title");
+            // 如果是蓝色 → 改成红色，否则 → 改成蓝色
+            if (title.style.color === "red") {
+                title.style.color = "blue";
+            } else {
+                title.style.color = "red";
+            }
+        }
+
+        // 2. 显示/隐藏内容
+        function toggleShow() {
+            let content = document.getElementById("content");
+            // 如果隐藏 → 显示；如果显示 → 隐藏
+            if (content.style.display === "none") {
+                content.style.display = "block";
+            } else {
+                content.style.display = "none";
+            }
+        }
+    &lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+              </div>
+
+              <div class="info-card">
+                <h3>案例说明</h3>
+                <p>这一页把 HTML 结构、CSS 样式和 JavaScript 交互放在一起，展示一个完整的前端基础示例。</p>
+                <ul>
+                  <li>HTML 负责页面骨架。</li>
+                  <li>CSS 负责页面样式。</li>
+                  <li>JavaScript 负责点击变色和显示/隐藏内容。</li>
+                </ul>
+                <a class="demo-link" href="http://sadepot-api-tiku.buzhi.com/test/html.html" target="_blank" rel="noopener noreferrer">演示地址：http://sadepot-api-tiku.buzhi.com/test/html.html</a>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="slide syntax-page" data-title="JS最基础语法" aria-label="JS最基础语法">
+        <article class="slide-shell">
+          <div class="slide-frame">
+            <header class="slide-top">
+              <div>
+                <div class="eyebrow">第四部分</div>
+                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">最基础语法（必学）</h2>
+              </div>
+              <div class="slide-counter"><strong>13</strong><span>/ 21</span></div>
+            </header>
+
+            <div class="content-grid">
+              <div class="stack">
+                <div class="code-card" aria-label="输出语句示例">
+                  <div class="code-head">
+                    <h3 class="code-title">1. 输出语句（测试用）</h3>
+                    <div class="code-lang">JavaScript</div>
+                  </div>
+                  <pre><code>// 弹出提示框
+alert("我是弹窗内容");
+
+// 在控制台打印（给开发者看）
+console.log("我是日志信息");</code></pre>
+                </div>
+
+                <div class="code-card" aria-label="变量示例">
+                  <div class="code-head">
+                    <h3 class="code-title">2. 变量：存放数据的“盒子”</h3>
+                    <div class="code-lang">JavaScript</div>
+                  </div>
+                  <pre><code>// 定义变量
+let 名字 = "张三";
+let 年龄 = 20;
+let 是否通过 = true;
+
+// 使用变量
+console.log(名字);
+console.log(年龄);</code></pre>
+                </div>
+              </div>
+
+              <div class="info-card">
+                <h3>基础说明</h3>
+                <p>输出语句用于测试页面和调试数据，变量用于存放和使用数据，是 JS 入门阶段最先掌握的两个点。</p>
+                <ul>
+                  <li>浏览器里最常见的测试方式是 `alert` 和 `console.log`。</li>
+                  <li>变量可以存字符串、数字、布尔值等数据。</li>
+                  <li>把这两个点掌握好，后面的函数、事件和判断会更容易理解。</li>
+                </ul>
+                <a class="demo-link" href="http://sadepot-api-tiku.buzhi.com/test/html.html" target="_blank" rel="noopener noreferrer">参考案例：http://sadepot-api-tiku.buzhi.com/test/html.html</a>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="slide js-topic-page split-page" data-title="JS函数" aria-label="JS函数">
+        <article class="slide-shell">
+          <div class="slide-frame">
+            <header class="slide-top">
+              <div>
+                <div class="eyebrow">第四部分</div>
+                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">函数（动作）</h2>
+              </div>
+              <div class="slide-counter"><strong>14</strong><span>/ 21</span></div>
+            </header>
+
+            <div class="content-grid">
+              <div class="stack">
+                <div class="code-card">
+                  <div class="code-head">
+                    <h3 class="code-title">3、函数的基础写法</h3>
+                    <div class="code-lang">JavaScript</div>
+                  </div>
+                  <pre><code>// 定义函数
+function 函数名(){
+  // 要执行的代码
+}
+
+// 调用函数（执行动作）
+函数名();</code></pre>
+                </div>
+
+                <div class="info-card">
+                  <h3>函数是什么</h3>
+                  <p>函数是一个“动作”，常用于提交表单、计算、查询、登录校验等场景。</p>
+                  <ul>
+                    <li>把一段重复要用的代码封装起来。</li>
+                    <li>需要时调用一次，就能执行对应动作。</li>
+                    <li>页面中很多交互都可以拆成函数来写。</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="stack">
+                <div class="code-card">
+                  <div class="code-head">
+                    <h3 class="code-title">4、事件</h3>
+                    <div class="code-lang">HTML / JavaScript</div>
+                  </div>
+                  <pre><code>&lt;button onclick="提交()"&gt;点击提交&lt;/button&gt;
+
+&lt;script&gt;
+function 提交(){
+  alert("提交成功！");
+}
+&lt;/script&gt;</code></pre>
+                </div>
+
+                <div class="info-card">
+                  <h3>点击事件</h3>
+                  <p>点击事件就是给按钮绑定 `onclick`，点击后触发函数执行。</p>
+                  <ul>
+                    <li>按钮点击后，页面就会执行对应动作。</li>
+                    <li>这是最常见的前端交互方式之一。</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="slide js-topic-page judge-page logic-page" data-title="逻辑判断" aria-label="逻辑判断">
+        <article class="slide-shell">
+          <div class="slide-frame">
+            <header class="slide-top">
+              <div>
+                <div class="eyebrow">第四部分</div>
+                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">逻辑判断</h2>
+              </div>
+              <div class="slide-counter"><strong>15</strong><span>/ 21</span></div>
+            </header>
+
+            <div class="content-grid">
+              <div class="stack">
+                <div class="code-card">
+                  <div class="code-head">
+                    <h3 class="code-title">if / else 示例</h3>
+                    <div class="code-lang">JavaScript</div>
+                  </div>
+                  <pre><code>let 分数 = 80;
+
+if(分数 &gt;= 60){
+  console.log("及格");
+} else {
+  console.log("不及格");
+}</code></pre>
+                </div>
+              </div>
+
+              <div class="info-card">
+                <h3>常用场景</h3>
+                <ul>
+                  <li>判断输入框是否为空。</li>
+                  <li>判断密码是否正确。</li>
+                  <li>判断是否满足提交条件。</li>
+                  <li>判断权限。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="slide js-topic-page dom-page" data-title="DOM操作" aria-label="DOM操作">
+        <article class="slide-shell">
+          <div class="slide-frame">
+            <header class="slide-top">
+              <div>
+                <div class="eyebrow">第四部分</div>
+                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">DOM 操作（页面元素）</h2>
+              </div>
+              <div class="slide-counter"><strong>16</strong><span>/ 21</span></div>
+            </header>
+
+            <div class="content-grid">
+              <div class="stack">
+                <div class="code-card">
+                  <div class="code-head">
+                    <h3 class="code-title">DOM 基本操作</h3>
+                    <div class="code-lang">JavaScript</div>
+                  </div>
+                  <pre><code>1. 获取页面元素
+// 根据 id 获取元素
+let 元素 = document.getElementById("id名");
+
+2. 修改内容
+元素.innerHTML = "新的显示内容";
+
+3. 修改样式
+元素.style.color = "red";</code></pre>
+                </div>
+
+                <div class="code-card">
+                  <div class="code-head">
+                    <h3 class="code-title">实战：表单提交校验</h3>
+                    <div class="code-lang">HTML</div>
+                  </div>
+                  <pre><code>&lt;input type="text" id="name" placeholder="请输入姓名"&gt;
+&lt;button onclick="check()"&gt;提交&lt;/button&gt;
+
+&lt;script&gt;
+function check(){
+  let username = document.getElementById("name").value;
+  if(username == ""){
+    alert("请输入姓名");
+  } else {
+    alert("提交成功：" + username);
+  }
+}
+&lt;/script&gt;</code></pre>
+                </div>
+              </div>
+
+              <div class="info-card">
+                <h3>练习提示</h3>
+                <p>这一页适合现场演示“获取输入内容，再根据内容做判断”。</p>
+                <ul>
+                  <li>先拿到输入框的值。</li>
+                  <li>再判断是否为空。</li>
+                  <li>空值就提示错误，不为空就提示成功。</li>
+                </ul>
+                <a class="demo-link" href="http://sadepot-api-tiku.buzhi.com/test/from.html" target="_blank" rel="noopener noreferrer">演示地址：http://sadepot-api-tiku.buzhi.com/test/from.html</a>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="slide debug-page" data-title="F12调试" aria-label="F12调试">
+        <article class="slide-shell">
+          <div class="slide-frame">
+            <header class="slide-top">
+              <div>
+                <div class="eyebrow">第五部分</div>
+                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">五、F12 调试</h2>
+              </div>
+              <div class="slide-counter"><strong>17</strong><span>/ 21</span></div>
+            </header>
+
+            <div class="content-grid">
+              <div class="stack">
+                <div class="info-card">
+                  <h3>1. 如何打开开发者工具</h3>
+                  <ul>
+                    <li>Windows：按 `F12` 或 `Ctrl + Shift + I`。</li>
+                    <li>Mac：按 `Cmd + Option + I`。</li>
+                    <li>打开后可以查看网页结构、样式、报错和请求。</li>
+                  </ul>
+                </div>
+
+                <div class="info-card">
+                  <h3>2. 常见面板说明</h3>
+                  <ul>
+                    <li>`Elements`：看结构和样式。</li>
+                    <li>`Console`：看日志、报错、调试 JS。</li>
+                    <li>`Network`：看请求、状态码、接口返回。</li>
+                    <li>`Sources`：看源码、打断点调试。</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="stack">
+                <div class="info-card">
+                  <h3>3. 调试方法</h3>
+                  <ul>
+                    <li>页面效果不对，先看 `Elements` 里的结构和样式。</li>
+                    <li>按钮没反应，先看 `Console` 有没有报错。</li>
+                    <li>页面请求失败，去 `Network` 看状态码和返回内容。</li>
+                  </ul>
+                </div>
+
+                <div class="focus-card">
+                  <h3>4. 调试建议</h3>
+                  <p>不要认为这就是最终效果，自己改的文字和样式只是本地预览，线上没变。遇到 `500` 报错时，通常是后端服务问题，截图给开发即可。</p>
+                  <p>多用 F12，不要害怕它，前端排查问题很大一部分都要靠它。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="slide spec-page" data-title="规范总览" aria-label="规范总览">
+        <article class="slide-shell">
+          <div class="slide-frame">
+            <header class="slide-top">
+              <div>
+                <div class="eyebrow">第六部分</div>
+                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">六、规范</h2>
+              </div>
+              <div class="slide-counter"><strong>18</strong><span>/ 21</span></div>
+            </header>
+
+            <div class="content-grid">
+              <div class="info-card">
+                <h3>1. 界面规范（验收标准）</h3>
+                <p>这一页用于说明页面交付时的基础验收维度，重点看布局、交互和表单三个部分。</p>
+                <ul>
+                  <li>布局与视觉：页面结构是否整齐，内容是否对齐。</li>
+                  <li>交互反馈：按钮点击后是否有明确状态变化。</li>
+                  <li>表单与输入：必填项、输入限制、实时提示是否到位。</li>
+                </ul>
+                <p>验收时直接测试：什么都不填点击提交、输入错误格式点击提交。</p>
+              </div>
+
+              <div class="image-grid">
+                <div class="image-card">
+                  <h3>布局与视觉</h3>
+                  <img src="image/7.png" alt="布局与视觉规范示意图">
+                </div>
+                <div class="image-card">
+                  <h3>交互反馈</h3>
+                  <img src="image/8.png" alt="交互反馈规范示意图">
+                </div>
+                <div class="image-card">
+                  <h3>表单与输入</h3>
+                  <img src="image/9.png" alt="表单与输入规范示意图">
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="slide spec-page" data-title="HTML规范" aria-label="HTML规范">
+        <article class="slide-shell">
+          <div class="slide-frame">
+            <header class="slide-top">
+              <div>
+                <div class="eyebrow">第六部分</div>
+                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">HTML格式规范</h2>
+              </div>
+              <div class="slide-counter"><strong>19</strong><span>/ 21</span></div>
+            </header>
+
+            <div class="content-grid">
+              <div class="code-card">
+                <div class="code-head">
+                  <h3 class="code-title">HTML 规范骨架</h3>
+                  <div class="code-lang">HTML</div>
+                </div>
+                <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-CN"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;规范&lt;/title&gt;
+    &lt;style&gt;&lt;!--css样式--&gt;&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;!--内容区域--&gt;
+&lt;script&gt;
+&lt;!--JS区域--&gt;
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+              </div>
+
+              <div class="info-card">
+                <h3>2.1 HTML 规范（页面结构）</h3>
+                <ul>
+                  <li>标签必须闭合，不能少闭合。</li>
+                  <li>标签嵌套要规范，块级包裹行内，不乱嵌套。</li>
+                  <li>不要使用废弃标签，比如 `&lt;center&gt;`。</li>
+                  <li>`id` 唯一，`class` 可重复，自定义属性用 `data-` 开头。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="slide spec-page" data-title="CSS规范" aria-label="CSS规范">
+        <article class="slide-shell">
+          <div class="slide-frame">
+            <header class="slide-top">
+              <div>
+                <div class="eyebrow">第六部分</div>
+                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">CSS 规范（样式）</h2>
+              </div>
+              <div class="slide-counter"><strong>20</strong><span>/ 21</span></div>
+            </header>
+
+            <div class="content-grid">
+              <div class="info-card">
+                <h3>1 书写规范</h3>
+                <ul>
+                  <li>每条样式占一行。</li>
+                  <li>选择器命名见名知意，如 `.login-form`、`.btn-submit`。</li>
+                  <li>颜色用十六进制，如 `#fff`、`#333`。</li>
+                </ul>
+                <h3>2 避免问题</h3>
+                <ul>
+                  <li>不写冗余样式，重复设置无用属性。</li>
+                  <li>尽量少用行内样式，统一在 CSS 管理。</li>
+                  <li>样式统一管理，不乱写。</li>
+                </ul>
+              </div>
+
+              <div class="code-card">
+                <div class="code-head">
+                  <h3 class="code-title">样式示例</h3>
+                  <div class="code-lang">CSS</div>
+                </div>
+                <pre><code>.login-form {
+  width: 100%;
+}
+
+.btn-submit {
+  color: #fff;
+  background: #3b82f6;
+}
+
+/* 尽量不要这样写 */
+&lt;div style="color:red"&gt;</code></pre>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="slide spec-page" data-title="通用规范" aria-label="通用规范">
+        <article class="slide-shell">
+          <div class="slide-frame">
+            <header class="slide-top">
+              <div>
+                <div class="eyebrow">第六部分</div>
+                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">通用规范</h2>
+              </div>
+              <div class="slide-counter"><strong>21</strong><span>/ 21</span></div>
+            </header>
+
+            <div class="content-grid">
+              <div class="info-card">
+                <h3>1 命名规范</h3>
+                <ul>
+                  <li>必须用英文，禁止中文、空格和特殊符号。</li>
+                  <li>推荐使用 `username`、`submitForm`、`userList`。</li>
+                  <li>小驼峰：`userName`，短横线：`user-list`。</li>
+                  <li>见名知意，看到名字就知道用途。</li>
+                </ul>
+                <h3>2 格式规范</h3>
+                <ul>
+                  <li>代码缩进统一，使用 2 或 4 个空格。</li>
+                  <li>一对标签占一行，不要挤在一起。</li>
+                  <li>注释清晰，函数和变量不注释会看不懂。</li>
+                </ul>
+              </div>
+
+              <div class="info-card">
+                <h3>3 结构规范</h3>
+                <ul>
+                  <li>HTML 只负责结构。</li>
+                  <li>CSS 只负责样式。</li>
+                  <li>JS 只负责交互。</li>
+                  <li>三者不混写，结构清晰。</li>
+                </ul>
+                <h3>4. 禁止项</h3>
+                <ul>
+                  <li>中文命名、重复 `id`、无意义命名。</li>
+                  <li>标签不闭合、样式混乱、行内样式满天飞。</li>
+                  <li>JS 变量重复定义、代码挤成一行、无法阅读。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+    </div>
+  </main>
+
+  <div class="image-modal" id="imageModal" aria-hidden="true" aria-label="图片放大预览">
+    <div class="image-modal__panel" role="dialog" aria-modal="true" aria-label="图片预览">
+      <button class="image-modal__close" id="imageModalClose" type="button" aria-label="关闭预览">×</button>
+      <img class="image-modal__img" id="imageModalImg" alt="">
+    </div>
+  </div>
+
+  <footer class="footbar" aria-label="幻灯片控制栏">
+    <div class="footbar-inner">
+      <div class="hint">按 <strong>← / →</strong> 或 <strong>空格</strong> 切换 · 按 <strong>F</strong> 全屏</div>
+      <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+      <div class="controls">
+        <button class="btn" id="prevBtn" type="button" aria-label="上一页">←</button>
+        <div class="dots" id="dots" aria-label="页面指示器"></div>
+        <button class="btn" id="nextBtn" type="button" aria-label="下一页">→</button>
+        <button class="btn primary" id="fullBtn" type="button" aria-label="全屏">全屏</button>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const dotsWrap = document.getElementById('dots');
+      const progressBar = document.getElementById('progressBar');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const fullBtn = document.getElementById('fullBtn');
+      const imageModal = document.getElementById('imageModal');
+      const imageModalImg = document.getElementById('imageModalImg');
+      const imageModalClose = document.getElementById('imageModalClose');
+      let current = 0;
+      let touchStartX = 0;
+      let touchEndX = 0;
+
+      function openImageModal(src, alt) {
+        imageModalImg.src = src;
+        imageModalImg.alt = alt || '图片预览';
+        imageModal.classList.add('open');
+        imageModal.setAttribute('aria-hidden', 'false');
+      }
+
+      function closeImageModal() {
+        imageModal.classList.remove('open');
+        imageModal.setAttribute('aria-hidden', 'true');
+        imageModalImg.src = '';
+        imageModalImg.alt = '';
+      }
+
+      function clamp(index) {
+        return Math.max(0, Math.min(slides.length - 1, index));
+      }
+
+      function setActive(index) {
+        current = clamp(index);
+        slides.forEach((slide, i) => {
+          const active = i === current;
+          slide.classList.toggle('active', active);
+          slide.setAttribute('aria-hidden', active ? 'false' : 'true');
+        });
+
+        Array.from(dotsWrap.children).forEach((dot, i) => {
+          dot.classList.toggle('active', i === current);
+          dot.setAttribute('aria-current', i === current ? 'true' : 'false');
+        });
+
+        progressBar.style.width = ((current + 1) / slides.length * 100) + '%';
+        prevBtn.disabled = current === 0;
+        nextBtn.disabled = current === slides.length - 1;
+      }
+
+      function go(delta) {
+        setActive(current + delta);
+      }
+
+      slides.forEach((slide, index) => {
+        slide.setAttribute('aria-hidden', index === 0 ? 'false' : 'true');
+      });
+
+      slides.forEach((_, index) => {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'dot' + (index === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', '跳转到第 ' + (index + 1) + ' 页');
+        dot.addEventListener('click', () => setActive(index));
+        dotsWrap.appendChild(dot);
+      });
+
+      document.querySelectorAll('.spec-page .image-card img, .css-page .figure-card img').forEach((img) => {
+        img.addEventListener('click', () => openImageModal(img.src, img.alt));
+      });
+
+      imageModalClose.addEventListener('click', closeImageModal);
+      imageModal.addEventListener('click', (event) => {
+        if (event.target === imageModal) closeImageModal();
+      });
+
+      prevBtn.addEventListener('click', () => go(-1));
+      nextBtn.addEventListener('click', () => go(1));
+      fullBtn.addEventListener('click', async () => {
+        try {
+          if (!document.fullscreenElement) {
+            await document.documentElement.requestFullscreen();
+          } else {
+            await document.exitFullscreen();
+          }
+        } catch (error) {
+          console.warn('Fullscreen unavailable:', error);
+        }
+      });
+
+      document.addEventListener('keydown', (event) => {
+        const key = event.key;
+        if (['ArrowRight', 'PageDown', ' '].includes(key)) {
+          event.preventDefault();
+          go(1);
+        } else if (['ArrowLeft', 'PageUp'].includes(key)) {
+          event.preventDefault();
+          go(-1);
+        } else if (key === 'Home') {
+          event.preventDefault();
+          setActive(0);
+        } else if (key === 'End') {
+          event.preventDefault();
+          setActive(slides.length - 1);
+        } else if (key.toLowerCase() === 'f') {
+          event.preventDefault();
+          fullBtn.click();
+        } else if (key === 'Escape' && imageModal.classList.contains('open')) {
+          closeImageModal();
+        }
+      });
+
+      document.addEventListener('touchstart', (event) => {
+        if (!event.touches || !event.touches.length) return;
+        touchStartX = event.touches[0].clientX;
+      }, { passive: true });
+
+      document.addEventListener('touchend', (event) => {
+        if (!event.changedTouches || !event.changedTouches.length) return;
+        touchEndX = event.changedTouches[0].clientX;
+        const delta = touchEndX - touchStartX;
+        if (Math.abs(delta) > 50) {
+          if (delta < 0) {
+            go(1);
+          } else {
+            go(-1);
+          }
+        }
+      }, { passive: true });
+
+      setActive(0);
+    })();
+  </script>
+</body>
+</html>
