@@ -177,7 +177,7 @@
 
     .slide-subtitle {
       margin: 12px 0 0;
-      max-width: 58ch;
+      /* max-width: 58ch; */
       color: var(--label-secondary);
       font-size: clamp(16px, 1.6vw, 20px);
       line-height: 1.75;
@@ -221,6 +221,11 @@
 
     .cover-grid {
       grid-template-columns: minmax(0, 1.12fr) minmax(300px, 0.88fr);
+      align-items: stretch;
+    }
+
+    .cover-grid .card {
+      grid-column: 1 / -1;
     }
 
     .content-grid {
@@ -238,16 +243,16 @@
     }
 
     .card {
-      padding: 24px;
+      padding: 18px 20px;
       background: linear-gradient(180deg, rgba(28, 28, 30, 0.92), rgba(28, 28, 30, 0.78));
       display: grid;
-      gap: 14px;
+      gap: 10px;
       align-content: start;
     }
 
     .card-title {
-      font-size: 24px;
-      line-height: 1.18;
+      font-size: 22px;
+      line-height: 1.16;
       font-weight: 800;
       color: var(--label-primary);
       margin: 0;
@@ -256,18 +261,18 @@
     .card-subtitle {
       margin: 0;
       color: var(--label-secondary);
-      font-size: 15px;
-      line-height: 1.7;
+      font-size: 14px;
+      line-height: 1.6;
     }
 
     .script {
       display: grid;
-      gap: 14px;
-      padding: 24px;
+      gap: 10px;
+      padding: 18px 20px;
       background: linear-gradient(180deg, rgba(28, 28, 30, 0.92), rgba(28, 28, 30, 0.78));
       color: var(--label-primary);
-      font-size: 16px;
-      line-height: 1.85;
+      font-size: 15px;
+      line-height: 1.7;
       border-radius: 24px;
       border: 1px solid var(--separator);
       box-shadow: var(--shadow-sm);
@@ -278,12 +283,12 @@
     }
 
     .script .lead-line {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 800;
     }
 
     .script .quote {
-      padding: 14px 16px;
+      padding: 12px 14px;
       border-left: 4px solid var(--theme-primary);
       background: rgba(10, 132, 255, 0.12);
       border-radius: 16px;
@@ -292,11 +297,11 @@
     .meta-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
+      gap: 10px;
     }
 
     .meta {
-      padding: 14px 15px;
+      padding: 12px 14px;
       border-radius: 20px;
       background: var(--surface-secondary);
       border: 1px solid var(--separator);
@@ -329,7 +334,7 @@
     .meta-value {
       display: block;
       margin-top: 8px;
-      font-size: 15px;
+      font-size: 14px;
       line-height: 1.5;
       font-weight: 700;
       color: var(--label-primary);
@@ -565,6 +570,13 @@
       align-items: start;
     }
 
+    .foundation-page .content-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: repeat(3, minmax(0, 1fr));
+      align-items: stretch;
+      gap: 14px;
+    }
+
     .qa-page .content-grid {
       grid-template-columns: minmax(0, 1fr);
     }
@@ -574,6 +586,11 @@
       display: grid;
       gap: 10px;
       min-height: 0;
+    }
+
+    .foundation-page .part-list,
+    .foundation-page .notes {
+      display: contents;
     }
 
     .qa-page .part-list {
@@ -668,8 +685,10 @@
     .qa-page .note-card,
     .foundation-page .note-card,
     .foundation-page .focus-card {
-      padding: 16px;
+      padding: 15px 16px;
       gap: 10px;
+      height: 100%;
+      align-content: start;
     }
 
     .qa-page .note-card p,
@@ -699,6 +718,9 @@
       box-shadow: var(--shadow-sm);
       display: grid;
       gap: 12px;
+      min-height: 0;
+      height: 100%;
+      align-content: start;
     }
 
     .foundation-page .intro-panel p {
@@ -736,9 +758,34 @@
       color: var(--label-secondary);
     }
 
+    .foundation-page .intro-panel {
+      grid-column: 1 / 2;
+      grid-row: 1 / 2;
+    }
+
+    .foundation-page .part-card {
+      grid-column: 1 / 2;
+      grid-row: 2 / 3;
+    }
+
+    .foundation-page .notes > .note-card:nth-child(1) {
+      grid-column: 1 / 2;
+      grid-row: 3 / 4;
+    }
+
+    .foundation-page .notes > .note-card:nth-child(2) {
+      grid-column: 2 / 3;
+      grid-row: 1 / 2;
+    }
+
+    .foundation-page .notes > .note-card:nth-child(3) {
+      grid-column: 2 / 3;
+      grid-row: 2 / 4;
+    }
+
     .foundation-page .note-card h3 {
       margin: 0;
-      font-size: 18px;
+      font-size: 17px;
       line-height: 1.35;
       color: var(--label-primary);
     }
@@ -2522,13 +2569,7 @@
             </header>
 
             <div class="cover-grid">
-              <div class="script">
-                <p class="lead-line">从基础认知开始，理解前端、后端、数据库和 API 的协作关系。</p>
-                <p>本课程按照“结构、样式、交互”的顺序展开，先认识 HTML 的页面结构，再学习 CSS 的视觉表现，最后进入 JavaScript 的交互能力。</p>
-                <p class="quote">学习目标是把前端基础知识串成一条清晰的入门路径，做到看得懂、记得住、能上手。</p>
-                <p>后续内容会围绕这些基础内容逐步展开。</p>
-              </div>
-
+              
               <aside class="card" aria-label="课程要点">
                 <div class="vision-label">课程要点</div>
                 <h2 class="card-title">基础认知 · HTML · CSS · JavaScript</h2>
@@ -2868,13 +2909,16 @@
 &lt;/html&gt;</code></pre>
                 </div>
 
-                <div class="section-block">
-                  <h3>2. div标签（前端布局核心元素）</h3>
-                  <p>div是HTML中最基础、最常用的“块级元素”，底层作用是“划分界面区域、承载其他元素”，是前端布局的核心基石，无默认样式（默认占满一行，无边框、无内边距），需配合CSS设置样式和布局。</p>
-                </div>
+                
               </div>
 
               <div class="notes">
+
+                <div class="section-block">
+                  <h3>div标签（前端布局核心元素）</h3>
+                  <p>div是HTML中最基础、最常用的“块级元素”，底层作用是“划分界面区域、承载其他元素”，是前端布局的核心基石，无默认样式（默认占满一行，无边框、无内边距），需配合CSS设置样式和布局。</p>
+                </div>
+
                 <div class="section-block">
                   <h3>核心特性</h3>
                   <ul>
@@ -2901,7 +2945,7 @@
             <header class="slide-top">
               <div>
                 <div class="eyebrow">第二部分</div>
-                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">3.其他：p、span、img、strong</h2>
+                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">其他：p、span、img、strong</h2>
               </div>
               <div class="slide-counter"><strong>07</strong><span>/ 21</span></div>
             </header>
@@ -2909,7 +2953,7 @@
             <div class="content-grid">
               <div class="code-card" aria-label="其他标签示例代码">
                 <div class="code-head">
-                  <h3 class="code-title">Markdown 代码区</h3>
+                  <h3 class="code-title">代码区</h3>
                   <div class="code-lang">Plain Text</div>
                 </div>
                 <pre><code>&lt;p&gt;&lt;/p&gt;
@@ -2948,7 +2992,7 @@
             <header class="slide-top">
               <div>
                 <div class="eyebrow">第二部分</div>
-                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">案例：tab组件（基础交互组件）底层实现</h2>
+                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">案例：tab组件（基础交互组件）</h2>
               </div>
               <div class="slide-counter"><strong>08</strong><span>/ 21</span></div>
             </header>
@@ -2979,7 +3023,7 @@
               <div class="flow-card">
                 <h3>补充说明</h3>
                 <p>其他基础组件（按钮、输入框、弹窗）的底层逻辑与tab组件一致，均是“结构+样式+简单交互”的组合，核心是“复用性”。</p>
-                <a class="demo-link" href="https://www.antdv.com/components/overview-cn" target="_blank" rel="noopener noreferrer">前端组件案例：https://www.antdv.com/components/overview-cn</a>
+                <a class="demo-link" href="https://www.antdv.com/components/overview-cn" target="_blank" rel="noopener noreferrer">前端组件：https://www.antdv.com/components/overview-cn</a>
               </div>
             </div>
           </div>
@@ -2992,7 +3036,7 @@
             <header class="slide-top">
               <div>
                 <div class="eyebrow">第二部分</div>
-                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">4. 表单</h2>
+                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">表单</h2>
               </div>
               <div class="slide-counter"><strong>09</strong><span>/ 21</span></div>
             </header>
@@ -3250,7 +3294,7 @@
             <header class="slide-top">
               <div>
                 <div class="eyebrow">第三部分</div>
-                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">三、前端样式基础：CSS</h2>
+                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">前端样式基础：CSS</h2>
               </div>
               <div class="slide-counter"><strong>10</strong><span>/ 21</span></div>
             </header>
@@ -3315,7 +3359,7 @@
             <header class="slide-top">
               <div>
                 <div class="eyebrow">第四部分</div>
-                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">四、JS基础知识</h2>
+                <h2 class="slide-title" style="font-size: clamp(34px, 4.5vw, 62px);">JS基础知识</h2>
               </div>
               <div class="slide-counter"><strong>11</strong><span>/ 21</span></div>
             </header>
