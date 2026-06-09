@@ -880,7 +880,7 @@
       background: #0f1116;
       border: 1px solid rgba(255, 255, 255, 0.08);
       overflow: auto;
-      max-height: 330px;
+      max-height: 360px;
       scrollbar-gutter: stable;
     }
 
@@ -923,16 +923,6 @@
       padding-left: 18px;
       display: grid;
       gap: 8px;
-    }
-
-    .html-page .demo-link {
-      padding: 12px 14px;
-      border-radius: 16px;
-      border: 1px solid rgba(10, 132, 255, 0.16);
-      background: rgba(10, 132, 255, 0.08);
-      color: #dfeeff;
-      text-decoration: none;
-      overflow-wrap: anywhere;
     }
 
     .tags-page .content-grid {
@@ -1000,34 +990,6 @@
       white-space: pre-wrap;
       word-break: break-word;
       font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
-    }
-
-    .tags-page .tag-figure {
-      display: grid;
-      gap: 10px;
-      padding: 14px 16px 16px;
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      background: rgba(255, 255, 255, 0.04);
-      min-height: 0;
-    }
-
-    .tags-page .tag-figure img {
-      display: block;
-      width: 100%;
-      max-height: 200px;
-      object-fit: contain;
-      border-radius: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(255, 255, 255, 0.04);
-      cursor: zoom-in;
-    }
-
-    .tags-page .tag-figure-caption {
-      margin: 0;
-      color: var(--label-secondary);
-      font-size: 13px;
-      line-height: 1.55;
     }
 
     .tags-page .markdown-card {
@@ -1714,8 +1676,7 @@
 
     .js-topic-page .content-grid,
     .spec-page .content-grid {
-      align-items: stretch;
-      gap: 16px;
+      align-items: start;
     }
 
     .js-topic-page .content-grid {
@@ -2099,8 +2060,6 @@
       background: linear-gradient(180deg, rgba(28, 28, 30, 0.92), rgba(28, 28, 30, 0.78));
       box-shadow: var(--shadow-sm);
       min-height: 0;
-      height: 100%;
-      align-content: start;
     }
 
     .js-topic-page .code-head,
@@ -2155,14 +2114,6 @@
 
     .spec-page pre {
       max-height: clamp(240px, 32vh, 340px);
-    }
-
-    .css-spec-page .code-card {
-      min-height: 0;
-    }
-
-    .css-spec-page .code-card pre {
-      max-height: clamp(320px, 44vh, 460px);
     }
 
     .js-topic-page pre code,
@@ -3079,7 +3030,6 @@
 &lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;</code></pre>
-                  <a class="demo-link" href="http://sadepot-api-tiku.buzhi.com/test/html-about.html" target="_blank" rel="noopener noreferrer">演示地址：http://sadepot-api-tiku.buzhi.com/test/html-about.html</a>
                 </div>
 
                 
@@ -3135,10 +3085,6 @@
 &lt;img src="http://img.yaotia.com/tiku/2026-05/19/b9e02.png" width="300"&gt;
 &lt;strong&gt;加粗这句内容&lt;/strong&gt;
                 </code></pre>
-                <div class="tag-figure">
-                  <img src="image/divpspan.png" alt="div、p、span、img、strong 标签示意图">
-                  <p class="tag-figure-caption">div / p / span / img / strong 的基础展示示意。</p>
-                </div>
               </div>
 
               <div class="markdown-card" aria-label="标签说明">
@@ -4049,7 +3995,7 @@ function check(){
         </article>
       </section>
 
-      <section class="slide spec-page css-spec-page" data-title="CSS规范" aria-label="CSS规范">
+      <section class="slide spec-page" data-title="CSS规范" aria-label="CSS规范">
         <article class="slide-shell">
           <div class="slide-frame">
             <header class="slide-top">
@@ -4081,8 +4027,7 @@ function check(){
                   <h3 class="code-title">样式示例</h3>
                   <div class="code-lang">CSS</div>
                 </div>
-                <pre><code>&lt;style&gt;
-.login-form {
+                <pre><code>.login-form {
   width: 100%;
 }
 
@@ -4090,17 +4035,9 @@ function check(){
   color: #fff;
   background: #3b82f6;
 }
-&lt;/style&gt;
 
-/* 行内css样式（尽量不要这样写） */
-&lt;div style="color:red"&gt;
-
-/* 头部引用css文件 */
-&lt;head&gt;
-&lt;link rel="stylesheet" href="/assets/index.css"&gt;
-&lt;/head&gt;
-
-</code></pre>
+/* 尽量不要这样写 */
+&lt;div style="color:red"&gt;</code></pre>
               </div>
             </div>
           </div>
@@ -4318,7 +4255,7 @@ function check(){
         dotsWrap.appendChild(dot);
       });
 
-      document.querySelectorAll('.spec-page .image-card img, .css-page .figure-card img, .tags-page .tag-figure img').forEach((img) => {
+      document.querySelectorAll('.spec-page .image-card img, .css-page .figure-card img').forEach((img) => {
         img.addEventListener('click', () => openImageModal(img.src, img.alt));
       });
 
